@@ -1,3 +1,4 @@
 dist/*
 build/*
 piptest/*
+__pycache__

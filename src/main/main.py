@@ -1,6 +1,6 @@
 import numpy as np
 
-from py_xrd_visualize import visualize
+from src.visualize import visualize
 
 
 def main():

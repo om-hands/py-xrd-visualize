@@ -81,11 +81,10 @@ def arrange_row(
 
     for ax, xy in zip(axs, xys):  # type: ignore
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        ax.set_yscale(yscale)
         ax.plot(*xy)
 
     plt.xlim(range)
-
-    plt.yscale(yscale)
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)

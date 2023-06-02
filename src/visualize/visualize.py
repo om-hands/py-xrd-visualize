@@ -4,6 +4,7 @@ from typing import Tuple, List, Literal
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import xrd_xy_parser.xy as xy
 
 
@@ -34,15 +35,20 @@ def arrange_row(
 
     fig, axs = plt.subplots(nrows=len(xys), sharex=sharex)
 
+    # axs is "Axes or array of Axes"
     if isinstance(axs, np.ndarray):
         for ax, xy in zip(axs, xys):  # type: ignore
-            ax.plot(*xy)  # set data
+            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+            ax.plot(*xy)
     else:
-        axs.plot(*xys[0])  # set data
+        axs.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        axs.plot(*xys[0])
 
-    plt.yscale(yscale)
     plt.xlim(range)
 
+    plt.yscale(yscale)
+
+    # set labels on the center of figure
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
 

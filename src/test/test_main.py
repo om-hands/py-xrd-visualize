@@ -17,5 +17,16 @@ class Test_visualize(unittest.TestCase):
         )
 
 
+def main():
+
+    for k_attrname, v_attr_obj in globals().items():
+        if k_attrname.startswith("Test") and callable(v_attr_obj):
+            try:
+                v_attr_obj()
+            except TypeError as e:
+                print("{k_attrname} start with 'Test' but need argument")
+                traceback.print_exception(e)
+
+
 if __name__ == "__main__":
-    unittest.main()
+    main()

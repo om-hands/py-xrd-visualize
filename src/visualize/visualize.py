@@ -33,16 +33,15 @@ def arrange_row(
     yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
 ):
 
-    fig, axs = plt.subplots(nrows=len(xys), sharex=sharex)
+    fig, axs = plt.subplots(nrows=len(xys), sharex=sharex, squeeze=False)
 
+    # print(type(axs), axs[0], axs[0])
+    axs = axs[:, 0]
     # axs is "Axes or array of Axes"
-    if isinstance(axs, np.ndarray):
-        for ax, xy in zip(axs, xys):  # type: ignore
-            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
-            ax.plot(*xy)
-    else:
-        axs.xaxis.set_minor_locator(ticker.AutoMinorLocator())
-        axs.plot(*xys[0])
+
+    for ax, xy in zip(axs, xys):  # type: ignore
+        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        ax.plot(*xy)
 
     plt.xlim(range)
 

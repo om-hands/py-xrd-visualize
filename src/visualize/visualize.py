@@ -82,6 +82,10 @@ def arrange_row(
     for ax, xy in zip(axs, xys):  # type: ignore
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
         ax.set_yscale(yscale)
+
+        # set ylabel
+        ax.set_yticklabels([])
+
         ax.plot(*xy)
 
     plt.xlim(range)

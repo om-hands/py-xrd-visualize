@@ -1,11 +1,15 @@
 import traceback
 import sys
-from typing import Tuple, List, Literal
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import xrd_xy_parser.xy as xy
+
+# import Types
+from typing import Tuple, List, Literal
+from matplotlib.axes import Axes
+
 
 
 def read_xy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
@@ -73,13 +77,16 @@ def arrange_row(
 
         `yscale`:y-axis scale.
     """
-    fig, axs = plt.subplots(nrows=len(xys), sharex=sharex, squeeze=False)
-
+    # axs is "Axes or array of Axes". 
+    # if squeeze=False,axs is always array of Axes
+    fig, _axs = plt.subplots(nrows=len(xys), sharex=sharex, squeeze=False)
     # print(type(axs), axs[0], axs[0])
-    axs = axs[:, 0]
-    # axs is "Axes or array of Axes"
-
-    for ax, xy in zip(axs, xys):  # type: ignore
+    
+    axs = _axs[:, 0]
+    
+    
+    for _ax, xy in zip(axs, xys): 
+        ax:Axes = _ax
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
         ax.set_yscale(yscale)
 

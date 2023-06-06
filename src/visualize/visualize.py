@@ -80,10 +80,7 @@ def arrange_row(
     # axs is "Axes or array of Axes". 
     # if squeeze=False,axs is always array of Axes
     fig, _axs = plt.subplots(nrows=len(xys), sharex=sharex, squeeze=False)
-    # print(type(axs), axs[0], axs[0])
-    
     axs = _axs[:, 0]
-    
     
     for _ax, xy in zip(axs, xys): 
         ax:Axes = _ax

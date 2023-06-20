@@ -30,8 +30,7 @@ def read_xy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
        If file not found, exit program.
     """
     try:
-        _, body, _ = xy.readstr(target_filename)
-        return body[:, 0], body[:, 1]
+        return xy.read2xy(target_filename)
     except xy.ParseError as e:
         traceback.print_exception(e)
         sys.exit(1)

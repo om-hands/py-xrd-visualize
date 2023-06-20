@@ -6,7 +6,7 @@ authors = [{ name = "om-hands", email = "okumuramasaki.hands@gmail.com" }]
 dependencies = [
     "matplotlib~=3.7.1",
     "numpy~=1.24.3",
-    "xrd-xy-parser~=0.0.3",
+    "xrd-xy-parser~=0.0.4",
     "PyQt5~=5.15.9",
 ]
 readme = "README.md"

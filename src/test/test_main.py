@@ -63,7 +63,7 @@ def Test_arrange_rawdata_nth():
 
 
 def main():
-
+    visualize.parameter()
     for k_attrname, v_attr_obj in globals().items():
         if k_attrname.startswith("Test") and callable(v_attr_obj):
             try:

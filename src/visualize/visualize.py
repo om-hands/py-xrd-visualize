@@ -2,6 +2,7 @@ import traceback
 import sys
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import xrd_xy_parser.xy as xy
@@ -52,6 +53,13 @@ def read_file_dummy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
     y = np.sin(x)
     return x, y
 
+def parameter():
+    mpl.rcParams.update(
+        {
+            "font.family": "sans-serif",
+            "font.sans-serif": "Arial",
+        }
+    )
 
 def arrange_row(
     xys: List[Tuple[np.ndarray, np.ndarray]],
@@ -99,4 +107,5 @@ def arrange_row(
     fig.supylabel(ylabel)
 
     plt.grid(False)
+    plt.tight_layout()
     plt.show()

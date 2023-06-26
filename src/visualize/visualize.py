@@ -11,6 +11,7 @@ from xrd_xy_parser.xy import xrdXY
 # import Types
 from typing import Tuple, List, Literal
 from matplotlib.axes import Axes
+from matplotlib.ticker import Locator
 from io import TextIOBase
 from pathlib import Path 
 
@@ -65,10 +66,15 @@ def parameter():
 
 def arrange_row(
     xys: List[xrdXY],
-    range: List[float],
+    range:tuple[float,float],
+    
     xlabel: str,
     ylabel: str,
-    sharex: bool = True,
+    title: str ,
+    save:bool=False,
+    ymax: float | None = None,
+    ymin:float|None=None,
+    manual_locater:Locator|None=None,
     yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
 ):
 
@@ -89,20 +95,37 @@ def arrange_row(
     """
     # axs is "Axes or array of Axes". 
     # if squeeze=False,axs is always array of Axes
-    fig, _axs = plt.subplots(nrows=len(xys), sharex=sharex, squeeze=False)
+    fig, _axs = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
     axs = _axs[:, 0]
     
     for _ax, xy in zip(axs, xys): 
         ax:Axes = _ax
-        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
-        ax.set_yscale(yscale)
-
-        # set ylabel
-        ax.set_yticklabels([])
-
         ax.plot(*xy)
 
-    plt.xlim(range)
+        # scale
+        ax.set_yscale(yscale)
+        
+        # limit
+        ax.set_xlim(range)
+        if ymin is not None:
+            ax.set_ylim(ymin=ymin)
+
+        if ymax is not None:
+            ax.set_ylim(ymax=ymax)
+        
+        # メモリ自動調整
+        major_locater:Locator=ticker.AutoLocator()
+
+        if manual_locater is not None:
+            major_locater= manual_locater
+
+        ax.xaxis.set_major_locator(major_locater)       
+        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())   
+
+        # ticklabel
+        # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
+        ax.set_yticklabels([])     
+        
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)
@@ -111,3 +134,5 @@ def arrange_row(
     plt.grid(False)
     plt.tight_layout()
     plt.show()
+    if save:
+        fig.savefig(title)

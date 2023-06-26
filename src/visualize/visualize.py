@@ -6,6 +6,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import xrd_xy_parser.xy as xy
+from xrd_xy_parser.xy import xrdXY
 
 # import Types
 from typing import Tuple, List, Literal
@@ -13,7 +14,7 @@ from matplotlib.axes import Axes
 
 
 
-def read_xy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
+def read_xy(target_filename: str) -> xrdXY:
     """
     read file from `target_filename` ,and return x-y data.
     Parameters
@@ -36,7 +37,7 @@ def read_xy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
         sys.exit(1)
 
 
-def read_file_dummy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
+def read_file_dummy(target_filename: str) -> xrdXY:
     """
     Parameters
     ---
@@ -50,7 +51,7 @@ def read_file_dummy(target_filename: str) -> Tuple[np.ndarray, np.ndarray]:
     """
     x = np.linspace(0, 2 * np.pi)
     y = np.sin(x)
-    return x, y
+    return xrdXY(x, y)
 
 def parameter():
     mpl.rcParams.update(
@@ -61,7 +62,7 @@ def parameter():
     )
 
 def arrange_row(
-    xys: List[Tuple[np.ndarray, np.ndarray]],
+    xys: List[xrdXY],
     range: List[float],
     xlabel: str,
     ylabel: str,

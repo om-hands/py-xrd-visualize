@@ -11,10 +11,12 @@ from xrd_xy_parser.xy import xrdXY
 # import Types
 from typing import Tuple, List, Literal
 from matplotlib.axes import Axes
+from io import TextIOBase
+from pathlib import Path 
 
 
+def read_xy(target_filename: TextIOBase|str|Path) -> xrdXY:
 
-def read_xy(target_filename: str) -> xrdXY:
     """
     read file from `target_filename` ,and return x-y data.
     Parameters

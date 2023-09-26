@@ -15,7 +15,7 @@ from typing import Tuple, List, Literal
 from matplotlib.axes import Axes
 
 
-def read_xy(target_filename: io.TextIOBase | str | pathlib.Path) -> xrdXY:
+def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> xrdXY:
     """
     read file from `target_filename` ,and return x-y data.
     Parameters
@@ -32,7 +32,7 @@ def read_xy(target_filename: io.TextIOBase | str | pathlib.Path) -> xrdXY:
        If file not found, exit program.
     """
     try:
-        return xy.read2xy(target_filename)
+        return xy.read2xy(target_file)
     except xy.ParseError as e:
         traceback.print_exception(e)
         sys.exit(1)

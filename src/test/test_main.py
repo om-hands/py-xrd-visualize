@@ -141,9 +141,12 @@ def main():
     for k_attrname, v_attr_obj in globals().items():
         if k_attrname.startswith("Test") and callable(v_attr_obj):
             try:
+                print("test:", k_attrname, file=sys.stderr)
                 v_attr_obj()
             except TypeError as e:
-                print("{k_attrname} start with 'Test' but need argument")
+                print(
+                    "{k_attrname} start with 'Test' but need argument", file=sys.stderr
+                )
                 traceback.print_exception(e)
 
 

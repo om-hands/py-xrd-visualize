@@ -1,21 +1,22 @@
 import traceback
 import numpy as np
+import io
+import sys
+
 from src.visualize import visualize
 from typing import Callable, Tuple, List, Literal
 from matplotlib.ticker import MultipleLocator
-import io
+
 
 def Test_arrange_dummy():
     xys = list(map(visualize.read_file_dummy, ["dummysine"]))
     visualize.arrange_row(
         xys=xys,
         range=(0.0, 2 * np.pi),
-        
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        
         yscale="linear",
-        title="dummysine"
+        title="dummysine",
     )
 
 
@@ -27,8 +28,7 @@ def test_arrange_dummy_nth(n: int):
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         title="dummysine*n",
-        
-        yscale="linear"
+        yscale="linear",
     )
 
 
@@ -37,7 +37,6 @@ def Test_arrange_dummy_nth():
 
 
 def Test_arrange_rawdata():
-
     xys = list(map(visualize.read_xy, ["src/test/test.xy"]))
     visualize.arrange_row(
         xys=xys,
@@ -51,7 +50,6 @@ def Test_arrange_rawdata():
 
 
 def test_arrange_rawdata_nth(n: int):
-
     xys = list(map(visualize.read_xy, ["src/test/test.xy"] * n))
     visualize.arrange_row(
         xys=xys,
@@ -63,8 +61,9 @@ def test_arrange_rawdata_nth(n: int):
         yscale="log",
     )
 
+
 def Test_arrange_rawdata2():
-    data="""30.0000	15.0000
+    data = """30.0000	15.0000
 30.0100	13.0000
 30.0200	19.0000
 30.0300	10.0000
@@ -128,6 +127,7 @@ def Test_arrange_rawdata2():
         major_locator=MultipleLocator(0.2),
         yscale="log",
     )
+
 
 def Test_arrange_rawdata_nth():
     test_arrange_rawdata_nth(5)

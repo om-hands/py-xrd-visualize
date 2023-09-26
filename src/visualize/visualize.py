@@ -74,7 +74,7 @@ def arrange_row(
     save:bool=False,
     ymax: float | None = None,
     ymin:float|None=None,
-    manual_locater:Locator|None=None,
+    major_locator:Locator=ticker.AutoLocator(),
     yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
 ):
 
@@ -113,13 +113,8 @@ def arrange_row(
         if ymax is not None:
             ax.set_ylim(ymax=ymax)
         
-        # メモリ自動調整
-        major_locater:Locator=ticker.AutoLocator()
-
-        if manual_locater is not None:
-            major_locater= manual_locater
-
-        ax.xaxis.set_major_locator(major_locater)       
+        # メモリ自動調整   
+        ax.xaxis.set_major_locator(major_locator)       
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())   
 
         # ticklabel

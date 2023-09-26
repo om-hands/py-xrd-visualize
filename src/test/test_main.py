@@ -125,7 +125,7 @@ def Test_arrange_rawdata2():
         title="test.xy",
         ymax=50,
         ymin=1,
-        manual_locater=MultipleLocator(0.2),
+        major_locator=MultipleLocator(0.2),
         yscale="log",
     )
 

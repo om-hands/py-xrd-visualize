@@ -1,5 +1,7 @@
 import traceback
 import sys
+import io 
+import pathlib
 
 import numpy as np
 import matplotlib as mpl
@@ -11,12 +13,11 @@ from xrd_xy_parser.xy import xrdXY
 # import Types
 from typing import Tuple, List, Literal
 from matplotlib.axes import Axes
-from matplotlib.ticker import Locator
-from io import TextIOBase
-from pathlib import Path 
 
 
-def read_xy(target_filename: TextIOBase|str|Path) -> xrdXY:
+
+
+def read_xy(target_filename: io.TextIOBase|str|pathlib.Path) -> xrdXY:
 
     """
     read file from `target_filename` ,and return x-y data.
@@ -74,7 +75,7 @@ def arrange_row(
     save:bool=False,
     ymax: float | None = None,
     ymin:float|None=None,
-    major_locator:Locator=ticker.AutoLocator(),
+    major_locator:ticker.Locator=ticker.AutoLocator(),
     yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
 ):
 

@@ -1,58 +1,18 @@
-import traceback
-import sys
-import io
-import pathlib
-
 import numpy as np
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import xrd_xy_parser.xy as xy
-from xrd_xy_parser.xy import xrdXY
+
 
 # import Types
-from typing import Tuple, List, Literal
+from typing import Tuple, List, Literal, NamedTuple
 from matplotlib.axes import Axes
 
 
-def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> xrdXY:
-    """
-    read file from `target_filename` ,and return x-y data.
-    Parameters
-    ---
-    target_filename:xy-styled file name.
-
-    Return
-    ---
-    x,y:
-        x,y:np.ndarray
-
-    Error
-    ---
-       If file not found, exit program.
-    """
-    try:
-        return xy.read2xy(target_file)
-    except xy.ParseError as e:
-        traceback.print_exception(e)
-        sys.exit(1)
-
-
-def read_file_dummy(target_filename: str) -> xrdXY:
-    """
-    Parameters
-    ---
-    target_filename:not used.
-
-    Return
-    ---
-    x,y:
-        x:np.ndarray. 0~2π
-        y:np.ndarray. sin(x)
-    """
-    x = np.linspace(0, 2 * np.pi)
-    y = np.sin(x)
-    return xrdXY(x, y)
+class XY(NamedTuple):
+    x: np.ndarray
+    y: np.ndarray
 
 
 def parameter():
@@ -65,7 +25,7 @@ def parameter():
 
 
 def arrange_row(
-    xys: List[xrdXY],
+    xys: List[XY],
     range: tuple[float, float],
     xlabel: str,
     ylabel: str,

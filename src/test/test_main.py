@@ -3,13 +3,13 @@ import numpy as np
 import io
 import sys
 
-from src.visualize import visualize
+from src.visualize import visualize, util
 from typing import Callable, Tuple, List, Literal
 from matplotlib.ticker import MultipleLocator
 
 
 def Test_arrange_dummy():
-    xys = list(map(visualize.read_file_dummy, ["dummysine"]))
+    xys = list(map(util.read_file_dummy, ["dummysine"]))
     visualize.arrange_row(
         xys=xys,
         range=(0.0, 2 * np.pi),
@@ -21,7 +21,7 @@ def Test_arrange_dummy():
 
 
 def test_arrange_dummy_nth(n: int):
-    xys = list(map(visualize.read_file_dummy, ["dummysine"] * n))
+    xys = list(map(util.read_file_dummy, ["dummysine"] * n))
     visualize.arrange_row(
         xys=xys,
         range=(0.0, 2 * np.pi),
@@ -37,7 +37,7 @@ def Test_arrange_dummy_nth():
 
 
 def Test_arrange_rawdata():
-    xys = list(map(visualize.read_xy, ["src/test/test.xy"]))
+    xys = list(map(util.read_xy, ["src/test/test.xy"]))
     visualize.arrange_row(
         xys=xys,
         range=(38.2, 39.0),
@@ -50,7 +50,7 @@ def Test_arrange_rawdata():
 
 
 def test_arrange_rawdata_nth(n: int):
-    xys = list(map(visualize.read_xy, ["src/test/test.xy"] * n))
+    xys = list(map(util.read_xy, ["src/test/test.xy"] * n))
     visualize.arrange_row(
         xys=xys,
         range=(38.2, 39),
@@ -115,7 +115,7 @@ def Test_arrange_rawdata2():
 30.4900	13.0000
 30.5000	20.0000"""
     data = io.StringIO(data)
-    xys = list(map(visualize.read_xy, [data]))
+    xys = list(map(util.read_xy, [data]))
     visualize.arrange_row(
         xys=xys,
         range=(30.0, 30.5),

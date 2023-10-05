@@ -1,4 +1,5 @@
 import traceback
+
 import numpy as np
 import io
 import sys
@@ -21,18 +22,23 @@ def Test_arrange_dummy():
         yscale="linear",
     )
 
+    plt.suptitle("dummysine")
     plt.show()
 
 
 def test_arrange_dummy_nth(n: int):
     xys = list(map(util.read_file_dummy, ["dummysine"] * n))
-    visualize.arrange_row(
+    axs = visualize.arrange_row(
         xys=xys,
         range=(0.0, 2 * np.pi),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",
-    )
+    ).axes
+    for i, ax in enumerate(axs):
+        ax.set_title(str(i) + "th dummy")
+
+    plt.suptitle("dummysine*n")
     plt.show()
 
 
@@ -42,15 +48,19 @@ def Test_arrange_dummy_nth():
 
 def Test_arrange_rawdata():
     xys = list(map(util.read_xy, ["src/test/test.xy"]))
-    visualize.arrange_row(
+    ax = visualize.arrange_row(
         xys=xys,
         range=(38.2, 39.0),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         ymax=50,
         yscale="log",
-    )
+    ).axes[0]
 
+    ax.text(38.5, 10, "pointing", horizontalalignment="center", rotation="vertical")
+
+    plt.suptitle("Test_arrange_rawdata")
+    plt.grid(True)
     plt.show()
 
 
@@ -64,7 +74,7 @@ def test_arrange_rawdata_nth(n: int):
         ymax=50,
         yscale="log",
     )
-    # title = ("test.xy*n",)
+    plt.suptitle(f"Test_arrange_rawdata_{n}th")
     plt.show()
 
 
@@ -132,7 +142,7 @@ def Test_arrange_rawdata2():
         major_locator=MultipleLocator(0.2),
         yscale="log",
     )
-    # title = ("test.xy",)
+    plt.suptitle("Test_arrange_rawdata2")
     plt.show()
 
 

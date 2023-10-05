@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from matplotlib.figure import Figure
 
 
 # import Types
@@ -29,13 +30,11 @@ def arrange_row(
     range: tuple[float, float],
     xlabel: str,
     ylabel: str,
-    title: str,
-    save: bool = False,
     ymax: float | None = None,
     ymin: float | None = None,
     major_locator: ticker.Locator = ticker.AutoLocator(),
     yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
-):
+) -> Figure:
     """
     `arrange_row` displays a graph of the list of data `xys`.
 
@@ -83,8 +82,4 @@ def arrange_row(
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
 
-    plt.grid(False)
-    plt.tight_layout()
-    plt.show()
-    if save:
-        fig.savefig(title)
+    return fig

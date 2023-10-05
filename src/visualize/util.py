@@ -1,4 +1,8 @@
-import traceback, sys, io, pathlib
+import traceback
+import sys
+import io
+import pathlib
+
 import numpy as np
 
 import xrd_xy_parser.xy as xrdxy

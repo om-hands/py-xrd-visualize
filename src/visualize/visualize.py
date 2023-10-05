@@ -6,7 +6,7 @@ import matplotlib.ticker as ticker
 
 
 # import Types
-from typing import Tuple, List, Literal, NamedTuple
+from typing import List, Literal, NamedTuple
 from matplotlib.axes import Axes
 
 

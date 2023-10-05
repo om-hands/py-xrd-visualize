@@ -4,7 +4,6 @@ import io
 import sys
 
 from src.visualize import visualize, util
-from typing import Callable, Tuple, List, Literal
 from matplotlib.ticker import MultipleLocator
 
 

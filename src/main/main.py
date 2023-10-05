@@ -1,8 +1,3 @@
-import numpy as np
-
-from src.visualize import visualize
-
-
 def main():
     pass
 

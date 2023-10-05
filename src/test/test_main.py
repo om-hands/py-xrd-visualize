@@ -4,6 +4,10 @@ import io
 import sys
 
 from src.visualize import visualize, util
+import matplotlib.pyplot as plt
+
+# from matplotlib.figure import Figure
+
 from matplotlib.ticker import MultipleLocator
 
 
@@ -15,8 +19,9 @@ def Test_arrange_dummy():
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",
-        title="dummysine",
     )
+
+    plt.show()
 
 
 def test_arrange_dummy_nth(n: int):
@@ -26,9 +31,9 @@ def test_arrange_dummy_nth(n: int):
         range=(0.0, 2 * np.pi),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        title="dummysine*n",
         yscale="linear",
     )
+    plt.show()
 
 
 def Test_arrange_dummy_nth():
@@ -42,10 +47,11 @@ def Test_arrange_rawdata():
         range=(38.2, 39.0),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        title="test.xy",
         ymax=50,
         yscale="log",
     )
+
+    plt.show()
 
 
 def test_arrange_rawdata_nth(n: int):
@@ -55,10 +61,11 @@ def test_arrange_rawdata_nth(n: int):
         range=(38.2, 39),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        title="test.xy*n",
         ymax=50,
         yscale="log",
     )
+    # title = ("test.xy*n",)
+    plt.show()
 
 
 def Test_arrange_rawdata2():
@@ -120,12 +127,13 @@ def Test_arrange_rawdata2():
         range=(30.0, 30.5),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        title="test.xy",
         ymax=50,
         ymin=1,
         major_locator=MultipleLocator(0.2),
         yscale="log",
     )
+    # title = ("test.xy",)
+    plt.show()
 
 
 def Test_arrange_rawdata_nth():

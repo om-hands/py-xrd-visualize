@@ -34,6 +34,22 @@ def Test_arrange_dummy_sine():
     plt.suptitle("dummysine")
     plt.show()
 
+def Test_arrange_dummy_log():
+    range_ = (1, 100)
+    xys = [generate_xy(range_, np.exp)]
+
+    visualize.arrange_row(
+        xys=xys,
+        range=range_,
+        xlabel=r"log(x)",
+        ylabel=r"log(y)",
+        xscale="log",
+        yscale="log",
+    )
+
+    plt.suptitle("dummylog")
+    plt.show()
+
 
 def test_arrange_dummy_nth(n: int):
     range_ = (0.0, 2 * np.pi)

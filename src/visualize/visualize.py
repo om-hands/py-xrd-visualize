@@ -8,7 +8,8 @@ from matplotlib.figure import Figure
 
 # import Types
 from typing import List, Literal, NamedTuple
-from matplotlib.axes import Axes
+
+# from matplotlib.axes import Axes
 
 
 class XY(NamedTuple):
@@ -53,11 +54,36 @@ def arrange_row(
     """
     # axs is "Axes or array of Axes".
     # if squeeze=False,axs is always array of Axes
-    fig, _axs = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
-    axs = _axs[:, 0]
+    fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
+    # _axs
+    arrange_row_default(
+        fig,
+        xys=xys,
+        range_=range_,
+        xlabel=xlabel,
+        ylabel=ylabel,
+        ymax=ymax,
+        ymin=ymin,
+        major_locator=major_locator,
+        xscale=xscale,
+        yscale=yscale,
+    )
+    return fig
 
-    for _ax, xy in zip(axs, xys):
-        ax: Axes = _ax
+
+def arrange_row_default(
+    fig: Figure,
+    xys: List[XY],
+    range_: tuple[float, float],
+    xlabel: str,
+    ylabel: str,
+    ymax: float | None = None,
+    ymin: float | None = None,
+    major_locator: ticker.Locator = ticker.AutoLocator(),
+    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+):
+    for ax, xy in zip(fig.axes, xys):
         ax.plot(*xy)
 
         # scale
@@ -86,5 +112,3 @@ def arrange_row(
     # set labels on the center of figure
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
-
-    return fig

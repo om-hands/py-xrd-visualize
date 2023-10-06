@@ -1,4 +1,5 @@
 import traceback
+from typing import Any, Callable
 
 import numpy as np
 import io
@@ -12,11 +13,19 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 
-def Test_arrange_dummy():
-    xys = list(map(util.read_file_dummy, ["dummysine"]))
+def generate_xy(range_: tuple[float, float], f: Callable[[Any], Any]):
+    x = np.linspace(*range_)
+    y = f(x)
+    return visualize.XY(x, y)
+
+
+def Test_arrange_dummy_sine():
+    range_ = (0, 2 * np.pi)
+    xys = [generate_xy(range_, np.sin)]
+
     visualize.arrange_row(
         xys=xys,
-        range=(0.0, 2 * np.pi),
+        range=range_,
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",
@@ -27,10 +36,13 @@ def Test_arrange_dummy():
 
 
 def test_arrange_dummy_nth(n: int):
-    xys = list(map(util.read_file_dummy, ["dummysine"] * n))
+    range_ = (0.0, 2 * np.pi)
+    xy = generate_xy(range_, np.sin)
+    xys = [xy] * n
+
     axs = visualize.arrange_row(
         xys=xys,
-        range=(0.0, 2 * np.pi),
+        range=range_,
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",

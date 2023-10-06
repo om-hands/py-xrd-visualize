@@ -5,25 +5,25 @@ import numpy as np
 import io
 import sys
 
-from src.visualize import visualize, util
+
 import matplotlib.pyplot as plt
-
-# from matplotlib.figure import Figure
-
 from matplotlib.ticker import MultipleLocator
+
+from src.visualize import visualize, util
+from src.visualize.visualize import XY
 
 
 def generate_xy(range_: tuple[float, float], f: Callable[[Any], Any]):
     x = np.linspace(*range_)
     y = f(x)
-    return visualize.XY(x, y)
+    return XY(x, y)
 
 
 def Test_arrange_dummy_sine():
     range_ = (0, 2 * np.pi)
     xys = [generate_xy(range_, np.sin)]
 
-    visualize.arrange_row(
+    visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=range_,
         xlabel=r"$2\theta[°]$",
@@ -35,11 +35,28 @@ def Test_arrange_dummy_sine():
     plt.show()
 
 
+def Test_arrange_row_1axis_nxy_dummy_log():
+    range_ = (1, 100)
+    xys = [generate_xy(range_, np.exp)]
+
+    visualize.arrange_row_1axis_nxy(
+        xys=xys,
+        range_=range_,
+        xlabel=r"log(x)",
+        ylabel=r"log(y)",
+        xscale="log",
+        yscale="log",
+    )
+
+    plt.suptitle("arrange_row_1axis_nxy:dummylog")
+    plt.show()
+
+
 def Test_arrange_dummy_log():
     range_ = (1, 100)
     xys = [generate_xy(range_, np.exp)]
 
-    visualize.arrange_row(
+    visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=range_,
         xlabel=r"log(x)",
@@ -57,7 +74,7 @@ def test_arrange_dummy_nth(n: int):
     xy = generate_xy(range_, np.sin)
     xys = [xy] * n
 
-    axs = visualize.arrange_row(
+    axs = visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=range_,
         xlabel=r"$2\theta[°]$",
@@ -71,13 +88,40 @@ def test_arrange_dummy_nth(n: int):
     plt.show()
 
 
-def Test_arrange_dummy_nth():
+def Test_arrange_row_1axis_nxy_dummy_nth():
+    test_arrange_row_1axis_nxy_dummy_nth(15)
+
+
+def test_arrange_row_1axis_nxy_dummy_nth(n: int):
+    range_ = (0.0, 2 * np.pi)
+    xys: list[XY] = []
+
+    for i in range(n):
+        xys.append(generate_xy(range_, lambda x: i * np.sin(x)))
+
+    axs = visualize.arrange_row_1axis_nxy(
+        xys=xys,
+        range_=range_,
+        xlabel=r"$2\theta[°]$",
+        ylabel=r"$Intensity[arb. unit]$",
+        yscale="linear",
+    ).axes
+
+    for i, ax in enumerate(axs):
+        ax.set_title(str(i) + "th dummy")
+
+    plt.suptitle("arrange_row_1axis_nxy_dummy_nth")
+    plt.show()
+
+
+def Test_arrange_dummy_5th():
     test_arrange_dummy_nth(5)
 
 
 def Test_arrange_rawdata():
     xys = list(map(util.read_xy, ["src/test/test.xy"]))
-    ax = visualize.arrange_row(
+
+    ax = visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=(38.2, 39.0),
         xlabel=r"$2\theta[°]$",
@@ -95,7 +139,7 @@ def Test_arrange_rawdata():
 
 def test_arrange_rawdata_nth(n: int):
     xys = list(map(util.read_xy, ["src/test/test.xy"] * n))
-    visualize.arrange_row(
+    visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=(38.2, 39),
         xlabel=r"$2\theta[°]$",
@@ -161,7 +205,7 @@ def Test_arrange_rawdata2():
 30.5000	20.0000"""
     data = io.StringIO(data)
     xys = list(map(util.read_xy, [data]))
-    visualize.arrange_row(
+    visualize.arrange_row_naxis_nxy(
         xys=xys,
         range_=(30.0, 30.5),
         xlabel=r"$2\theta[°]$",

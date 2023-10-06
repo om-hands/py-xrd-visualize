@@ -4,12 +4,10 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.figure import Figure
-
+from matplotlib.axes import Axes
 
 # import Types
 from typing import List, Literal, NamedTuple
-
-# from matplotlib.axes import Axes
 
 
 class XY(NamedTuple):
@@ -26,7 +24,7 @@ def parameter():
     )
 
 
-def arrange_row(
+def arrange_row_1axis_nxy(
     xys: List[XY],
     range_: tuple[float, float],
     xlabel: str,
@@ -37,6 +35,69 @@ def arrange_row(
     xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
     yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
 ) -> Figure:
+    fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
+    ax = fig.axes[0]
+
+    for xy in xys:
+        arrange_row_default(
+            ax=ax,
+            xy=xy,
+            range_=range_,
+            ymax=ymax,
+            ymin=ymin,
+            major_locator=major_locator,
+            xscale=xscale,
+            yscale=yscale,
+        )
+
+    fig.supxlabel(xlabel)
+    fig.supylabel(ylabel)
+    return fig
+
+
+def arrange_row_naxis_nxy(
+    xys: List[XY],
+    range_: tuple[float, float],
+    xlabel: str,
+    ylabel: str,
+    ymax: float | None = None,
+    ymin: float | None = None,
+    major_locator: ticker.Locator = ticker.AutoLocator(),
+    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+) -> Figure:
+    fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
+    axs = fig.axes
+
+    for ax, xy in zip(axs, xys):
+        arrange_row_default(
+            ax=ax,
+            xy=xy,
+            range_=range_,
+            ymax=ymax,
+            ymin=ymin,
+            major_locator=major_locator,
+            xscale=xscale,
+            yscale=yscale,
+        )
+
+    # set labels on the center of figure
+    fig.supxlabel(xlabel)
+    fig.supylabel(ylabel)
+
+    return fig
+
+
+def arrange_row_default(
+    ax: Axes,
+    xy: XY,
+    range_: tuple[float, float],
+    ymax: float | None = None,
+    ymin: float | None = None,
+    major_locator: ticker.Locator = ticker.AutoLocator(),
+    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+):
     """
     `arrange_row` displays a graph of the list of data `xys`.
 
@@ -52,63 +113,28 @@ def arrange_row(
 
         `xscale`,`yscale`:x-axis,y-axis scale.
     """
-    # axs is "Axes or array of Axes".
-    # if squeeze=False,axs is always array of Axes
-    fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
-    # _axs
-    arrange_row_default(
-        fig,
-        xys=xys,
-        range_=range_,
-        xlabel=xlabel,
-        ylabel=ylabel,
-        ymax=ymax,
-        ymin=ymin,
-        major_locator=major_locator,
-        xscale=xscale,
-        yscale=yscale,
-    )
-    return fig
 
+    ax.plot(*xy)
 
-def arrange_row_default(
-    fig: Figure,
-    xys: List[XY],
-    range_: tuple[float, float],
-    xlabel: str,
-    ylabel: str,
-    ymax: float | None = None,
-    ymin: float | None = None,
-    major_locator: ticker.Locator = ticker.AutoLocator(),
-    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-):
-    for ax, xy in zip(fig.axes, xys):
-        ax.plot(*xy)
+    # scale
+    ax.set_xscale(xscale)
+    ax.set_yscale(yscale)
 
-        # scale
-        ax.set_xscale(xscale)
-        ax.set_yscale(yscale)
+    # x-limit
+    ax.set_xlim(range_)
 
-        # x-limit
-        ax.set_xlim(range_)
+    # y limit
+    if ymin is not None:
+        ax.set_ylim(ymin=ymin)
 
-        # y limit
-        if ymin is not None:
-            ax.set_ylim(ymin=ymin)
+    if ymax is not None:
+        ax.set_ylim(ymax=ymax)
 
-        if ymax is not None:
-            ax.set_ylim(ymax=ymax)
+    # メモリ自動調整
+    ax.xaxis.set_major_locator(major_locator)
+    if xscale != "log":
+        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
-        # メモリ自動調整
-        ax.xaxis.set_major_locator(major_locator)
-        if xscale != "log":
-            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
-
-        # ticklabel
-        # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
-        ax.set_yticklabels([])
-
-    # set labels on the center of figure
-    fig.supxlabel(xlabel)
-    fig.supylabel(ylabel)
+    # ticklabel
+    # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
+    ax.set_yticklabels([])

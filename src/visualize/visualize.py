@@ -33,7 +33,8 @@ def arrange_row(
     ymax: float | None = None,
     ymin: float | None = None,
     major_locator: ticker.Locator = ticker.AutoLocator(),
-    yscale: Literal["linear", "log", "symlog", "logit"] = "symlog",
+    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
+    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
 ) -> Figure:
     """
     `arrange_row` displays a graph of the list of data `xys`.
@@ -46,9 +47,9 @@ def arrange_row(
 
         `xlabel`,`ylabel`:label.
 
-        `sharex`:is share x-axis.
+        `ymax`,`ymin`:y-axis range,option
 
-        `yscale`:y-axis scale.
+        `xscale`,`yscale`:x-axis,y-axis scale.
     """
     # axs is "Axes or array of Axes".
     # if squeeze=False,axs is always array of Axes
@@ -60,10 +61,13 @@ def arrange_row(
         ax.plot(*xy)
 
         # scale
+        ax.set_xscale(xscale)
         ax.set_yscale(yscale)
 
-        # limit
+        # x-limit
         ax.set_xlim(range)
+
+        # y limit
         if ymin is not None:
             ax.set_ylim(ymin=ymin)
 
@@ -72,7 +76,8 @@ def arrange_row(
 
         # メモリ自動調整
         ax.xaxis.set_major_locator(major_locator)
-        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        if xscale != "log":
+            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
         # ticklabel
         # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))

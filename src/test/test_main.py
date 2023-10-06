@@ -25,7 +25,7 @@ def Test_arrange_dummy_sine():
 
     visualize.arrange_row(
         xys=xys,
-        range=range_,
+        range_=range_,
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",
@@ -34,13 +34,14 @@ def Test_arrange_dummy_sine():
     plt.suptitle("dummysine")
     plt.show()
 
+
 def Test_arrange_dummy_log():
     range_ = (1, 100)
     xys = [generate_xy(range_, np.exp)]
 
     visualize.arrange_row(
         xys=xys,
-        range=range_,
+        range_=range_,
         xlabel=r"log(x)",
         ylabel=r"log(y)",
         xscale="log",
@@ -58,7 +59,7 @@ def test_arrange_dummy_nth(n: int):
 
     axs = visualize.arrange_row(
         xys=xys,
-        range=range_,
+        range_=range_,
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         yscale="linear",
@@ -78,7 +79,7 @@ def Test_arrange_rawdata():
     xys = list(map(util.read_xy, ["src/test/test.xy"]))
     ax = visualize.arrange_row(
         xys=xys,
-        range=(38.2, 39.0),
+        range_=(38.2, 39.0),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         ymax=50,
@@ -96,7 +97,7 @@ def test_arrange_rawdata_nth(n: int):
     xys = list(map(util.read_xy, ["src/test/test.xy"] * n))
     visualize.arrange_row(
         xys=xys,
-        range=(38.2, 39),
+        range_=(38.2, 39),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         ymax=50,
@@ -162,7 +163,7 @@ def Test_arrange_rawdata2():
     xys = list(map(util.read_xy, [data]))
     visualize.arrange_row(
         xys=xys,
-        range=(30.0, 30.5),
+        range_=(30.0, 30.5),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
         ymax=50,

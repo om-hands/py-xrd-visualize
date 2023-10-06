@@ -27,7 +27,7 @@ def parameter():
 
 def arrange_row(
     xys: List[XY],
-    range: tuple[float, float],
+    range_: tuple[float, float],
     xlabel: str,
     ylabel: str,
     ymax: float | None = None,
@@ -43,7 +43,7 @@ def arrange_row(
     ---
         `xys`:xy-styled input data.
 
-        `range`:x-axis range.
+        `range_`:x-axis range.
 
         `xlabel`,`ylabel`:label.
 
@@ -65,7 +65,7 @@ def arrange_row(
         ax.set_yscale(yscale)
 
         # x-limit
-        ax.set_xlim(range)
+        ax.set_xlim(range_)
 
         # y limit
         if ymin is not None:

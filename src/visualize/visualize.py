@@ -30,6 +30,14 @@ def arrange_row_1axis_nxy(
     xlabel: str,
     ylabel: str,
 ) -> Figure:
+    """
+    Parameters:
+        `xys`:xy-styled input data.
+        `ax_func`:plot xy on ax.
+        `xlabel`,`ylabel`:axis label.
+
+
+    """
     fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
     ax = fig.axes[0]
 
@@ -48,6 +56,14 @@ def arrange_row_naxis_nxy(
     xlabel: str,
     ylabel: str,
 ) -> Figure:
+    """
+    Returns a figure with n data plotted on n axes each.
+    Parameters:
+    ---
+        `xys`:xy-styled input data.
+        `ax_func`:plot xy on ax.
+        `xlabel`,`ylabel`:axis label.
+    """
     fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
     axs = fig.axes
 
@@ -71,19 +87,19 @@ def arrange_row_default_conf(
     yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
 ) -> Callable[[Axes], None]:
     """
-    `arrange_row` displays a graph of the list of data `xys`.
-
     Parameters:
     ---
-        `xys`:xy-styled input data.
-
         `range_`:x-axis range.
-
-        `xlabel`,`ylabel`:label.
 
         `ymax`,`ymin`:y-axis range,option
 
+        `major_locator`: tick setting
+
         `xscale`,`yscale`:x-axis,y-axis scale.
+
+    Return
+    ---
+        `func(ax:Axes)`:plot xy on ax with configuration by this function
     """
 
     def lambda_(ax: Axes):

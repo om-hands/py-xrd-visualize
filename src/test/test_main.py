@@ -243,7 +243,7 @@ def main():
 
     # グローバルに定義されている関数のうち，"Test"で始まる関数を呼び出す
     # やりにくいけど見た目の設定をテストするのでunittest等が使えなかったのでしょうがない．
-    for k_attrname, v_attr_obj in globals().items():
+    for k_attrname, v_attr_obj in globals().copy().items():
         if k_attrname.startswith("Test") and callable(v_attr_obj):
             try:
                 print("test:", k_attrname, file=sys.stderr)

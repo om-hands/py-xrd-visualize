@@ -26,7 +26,7 @@ def parameter():
 
 def arrange_row_1axis_nxy(
     xys: List[XY],
-    ax_func: Callable[[Axes, XY], None],
+    ax_func: Callable[[Axes], None],
     xlabel: str,
     ylabel: str,
 ) -> Figure:
@@ -34,7 +34,8 @@ def arrange_row_1axis_nxy(
     ax = fig.axes[0]
 
     for xy in xys:
-        ax_func(ax, xy)
+        ax.plot(*xy)
+        ax_func(ax)
 
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
@@ -43,7 +44,7 @@ def arrange_row_1axis_nxy(
 
 def arrange_row_naxis_nxy(
     xys: List[XY],
-    ax_func: Callable[[Axes, XY], None],
+    ax_func: Callable[[Axes], None],
     xlabel: str,
     ylabel: str,
 ) -> Figure:
@@ -51,7 +52,8 @@ def arrange_row_naxis_nxy(
     axs = fig.axes
 
     for ax, xy in zip(axs, xys):
-        ax_func(ax, xy)
+        ax.plot(*xy)
+        ax_func(ax)
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)
@@ -67,7 +69,7 @@ def arrange_row_default_conf(
     major_locator: ticker.Locator = ticker.AutoLocator(),
     xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
     yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-):
+) -> Callable[[Axes], None]:
     """
     `arrange_row` displays a graph of the list of data `xys`.
 
@@ -84,9 +86,7 @@ def arrange_row_default_conf(
         `xscale`,`yscale`:x-axis,y-axis scale.
     """
 
-    def lambda_(ax: Axes, xy: XY):
-        ax.plot(*xy)
-
+    def lambda_(ax: Axes):
         # scale
         ax.set_xscale(xscale)
         ax.set_yscale(yscale)

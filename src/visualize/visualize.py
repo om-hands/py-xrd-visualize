@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import List, Literal, NamedTuple
+from typing import Callable, List, Literal, NamedTuple
 
 
 class XY(NamedTuple):
@@ -26,29 +26,15 @@ def parameter():
 
 def arrange_row_1axis_nxy(
     xys: List[XY],
-    range_: tuple[float, float],
+    ax_func: Callable[[Axes, XY], None],
     xlabel: str,
     ylabel: str,
-    ymax: float | None = None,
-    ymin: float | None = None,
-    major_locator: ticker.Locator = ticker.AutoLocator(),
-    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
 ) -> Figure:
     fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
     ax = fig.axes[0]
 
     for xy in xys:
-        arrange_row_default(
-            ax=ax,
-            xy=xy,
-            range_=range_,
-            ymax=ymax,
-            ymin=ymin,
-            major_locator=major_locator,
-            xscale=xscale,
-            yscale=yscale,
-        )
+        ax_func(ax, xy)
 
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
@@ -57,29 +43,15 @@ def arrange_row_1axis_nxy(
 
 def arrange_row_naxis_nxy(
     xys: List[XY],
-    range_: tuple[float, float],
+    ax_func: Callable[[Axes, XY], None],
     xlabel: str,
     ylabel: str,
-    ymax: float | None = None,
-    ymin: float | None = None,
-    major_locator: ticker.Locator = ticker.AutoLocator(),
-    xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-    yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
 ) -> Figure:
     fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
     axs = fig.axes
 
     for ax, xy in zip(axs, xys):
-        arrange_row_default(
-            ax=ax,
-            xy=xy,
-            range_=range_,
-            ymax=ymax,
-            ymin=ymin,
-            major_locator=major_locator,
-            xscale=xscale,
-            yscale=yscale,
-        )
+        ax_func(ax, xy)
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)
@@ -88,9 +60,7 @@ def arrange_row_naxis_nxy(
     return fig
 
 
-def arrange_row_default(
-    ax: Axes,
-    xy: XY,
+def arrange_row_default_conf(
     range_: tuple[float, float],
     ymax: float | None = None,
     ymin: float | None = None,
@@ -114,27 +84,30 @@ def arrange_row_default(
         `xscale`,`yscale`:x-axis,y-axis scale.
     """
 
-    ax.plot(*xy)
+    def lambda_(ax: Axes, xy: XY):
+        ax.plot(*xy)
 
-    # scale
-    ax.set_xscale(xscale)
-    ax.set_yscale(yscale)
+        # scale
+        ax.set_xscale(xscale)
+        ax.set_yscale(yscale)
 
-    # x-limit
-    ax.set_xlim(range_)
+        # x-limit
+        ax.set_xlim(range_)
 
-    # y limit
-    if ymin is not None:
-        ax.set_ylim(ymin=ymin)
+        # y limit
+        if ymin is not None:
+            ax.set_ylim(ymin=ymin)
 
-    if ymax is not None:
-        ax.set_ylim(ymax=ymax)
+        if ymax is not None:
+            ax.set_ylim(ymax=ymax)
 
-    # メモリ自動調整
-    ax.xaxis.set_major_locator(major_locator)
-    if xscale != "log":
-        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        # メモリ自動調整
+        ax.xaxis.set_major_locator(major_locator)
+        if xscale != "log":
+            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
-    # ticklabel
-    # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
-    ax.set_yticklabels([])
+        # ticklabel
+        # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
+        ax.set_yticklabels([])
+
+    return lambda_

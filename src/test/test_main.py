@@ -25,10 +25,12 @@ def Test_arrange_dummy_sine():
 
     visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=range_,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            yscale="linear",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        yscale="linear",
     )
 
     plt.suptitle("dummysine")
@@ -41,12 +43,15 @@ def Test_arrange_row_1axis_nxy_dummy_log():
 
     visualize.arrange_row_1axis_nxy(
         xys=xys,
-        range_=range_,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            xscale="log",
+            yscale="log",
+        ),
         xlabel=r"log(x)",
         ylabel=r"log(y)",
-        xscale="log",
-        yscale="log",
     )
+    # range_=range_,
 
     plt.suptitle("arrange_row_1axis_nxy:dummylog")
     plt.show()
@@ -58,11 +63,11 @@ def Test_arrange_dummy_log():
 
     visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=range_,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_, xscale="log", yscale="log"
+        ),
         xlabel=r"log(x)",
         ylabel=r"log(y)",
-        xscale="log",
-        yscale="log",
     )
 
     plt.suptitle("dummylog")
@@ -76,10 +81,12 @@ def test_arrange_dummy_nth(n: int):
 
     axs = visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=range_,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            yscale="linear",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        yscale="linear",
     ).axes
     for i, ax in enumerate(axs):
         ax.set_title(str(i) + "th dummy")
@@ -101,10 +108,12 @@ def test_arrange_row_1axis_nxy_dummy_nth(n: int):
 
     axs = visualize.arrange_row_1axis_nxy(
         xys=xys,
-        range_=range_,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            yscale="linear",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        yscale="linear",
     ).axes
 
     for i, ax in enumerate(axs):
@@ -123,11 +132,13 @@ def Test_arrange_rawdata():
 
     ax = visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=(38.2, 39.0),
+        ax_func=visualize.arrange_row_default_conf(
+            range_=(38.2, 39.0),
+            ymax=50,
+            yscale="log",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        ymax=50,
-        yscale="log",
     ).axes[0]
 
     ax.text(38.5, 10, "pointing", horizontalalignment="center", rotation="vertical")
@@ -141,11 +152,13 @@ def test_arrange_rawdata_nth(n: int):
     xys = list(map(util.read_xy, ["src/test/test.xy"] * n))
     visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=(38.2, 39),
+        ax_func=visualize.arrange_row_default_conf(
+            range_=(38.2, 39),
+            ymax=50,
+            yscale="log",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        ymax=50,
-        yscale="log",
     )
     plt.suptitle(f"Test_arrange_rawdata_{n}th")
     plt.show()
@@ -207,13 +220,15 @@ def Test_arrange_rawdata2():
     xys = list(map(util.read_xy, [data]))
     visualize.arrange_row_naxis_nxy(
         xys=xys,
-        range_=(30.0, 30.5),
+        ax_func=visualize.arrange_row_default_conf(
+            range_=(30.0, 30.5),
+            ymax=50,
+            ymin=1,
+            major_locator=MultipleLocator(0.2),
+            yscale="log",
+        ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-        ymax=50,
-        ymin=1,
-        major_locator=MultipleLocator(0.2),
-        yscale="log",
     )
     plt.suptitle("Test_arrange_rawdata2")
     plt.show()

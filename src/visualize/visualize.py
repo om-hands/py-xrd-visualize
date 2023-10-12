@@ -119,8 +119,8 @@ def arrange_row_default_conf(
 
         # メモリ自動調整
         ax.xaxis.set_major_locator(major_locator)
-        if xscale != "log":
-            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+
+        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
         # ticklabel
         # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))

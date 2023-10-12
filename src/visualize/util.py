@@ -29,3 +29,25 @@ def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> XY:
     except xrdxy.ParseError as e:
         traceback.print_exception(e)
         sys.exit(1)
+
+
+def slide_XYs_linear(xys: list[XY], slide: float, reverse=False) -> list[XY]:
+    if reverse:
+        xys.reverse()
+    newxy: list[XY] = []
+
+    for i, xy in enumerate(xys):
+        y = xy.y + (slide * i)
+        newxy.append(XY(xy.x, y))
+
+    return newxy
+
+
+def slide_XYs_log(xys: list[XY], slide: int, reverse=False) -> list[XY]:
+    if reverse:
+        xys.reverse()
+    newxy: list[XY] = []
+    for i, xy in enumerate(xys, 0):
+        y = (xy.y + 1) * 10 ** (slide * i)
+        newxy.append(XY(xy.x, y))
+    return newxy

@@ -95,6 +95,47 @@ def test_arrange_dummy_nth(n: int):
     plt.show()
 
 
+def Test_slide_XYs_linear():
+    range_ = (0.0, 2 * np.pi)
+    xy = generate_xy(range_, np.sin)
+    xys = [xy] * 5
+    xys = util.slide_XYs_linear(xys, 2.5)
+
+    visualize.arrange_row_1axis_nxy(
+        xys=xys,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            yscale="linear",
+        ),
+        xlabel=r"$2\theta[°]$",
+        ylabel=r"$Intensity[arb. unit]$",
+    )
+
+    plt.suptitle("slide_XYs_linear")
+    plt.show()
+
+
+def Test_slide_XYs_log():
+    range_ = (1, 100)
+    xy = generate_xy(range_, np.exp)
+
+    xys = [xy] * 5
+    xys = util.slide_XYs_log(xys, 5)
+
+    visualize.arrange_row_1axis_nxy(
+        xys=xys,
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            yscale="log",
+        ),
+        xlabel=r"$x$",
+        ylabel=r"$y[arb. unit]$",
+    )
+
+    plt.suptitle("slide_XYs_log")
+    plt.show()
+
+
 def Test_arrange_row_1axis_nxy_dummy_nth():
     test_arrange_row_1axis_nxy_dummy_nth(15)
 

@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import Callable, List, Literal
+from typing import Callable, List, Literal, TypeAlias
 
 
 @dataclass()
@@ -18,6 +18,8 @@ class XY:
 
     def to_tuple(self) -> tuple[np.ndarray, np.ndarray]:
         return (self.x, self.y)
+
+AxisConfig: TypeAlias = Callable[[Axes, XY], None]
 
 
 def parameter():
@@ -31,7 +33,8 @@ def parameter():
 
 def arrange_row_1axis_nxy(
     xys: List[XY],
-    ax_func: Callable[[Axes], None],
+    legends: list[str],
+    ax_func: AxisConfig,
     xlabel: str,
     ylabel: str,
 ) -> Figure:
@@ -47,9 +50,8 @@ def arrange_row_1axis_nxy(
     ax = fig.axes[0]
 
     for xy in xys:
-        ax.plot(*xy.to_tuple())
-        ax_func(ax)
-
+        ax_func(ax, xy)
+    ax.legend(legends)
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
     return fig
@@ -57,7 +59,8 @@ def arrange_row_1axis_nxy(
 
 def arrange_row_naxis_nxy(
     xys: List[XY],
-    ax_func: Callable[[Axes], None],
+    legends: list[str],
+    ax_func: AxisConfig,
     xlabel: str,
     ylabel: str,
 ) -> Figure:
@@ -73,13 +76,13 @@ def arrange_row_naxis_nxy(
     axs = fig.axes
 
     for ax, xy in zip(axs, xys):
-        ax.plot(*xy.to_tuple())
-        ax_func(ax)
+        ax_func(ax, xy)
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
 
+    fig.legend(legends)
     return fig
 
 
@@ -90,7 +93,7 @@ def arrange_row_default_conf(
     major_locator: ticker.Locator = ticker.AutoLocator(),
     xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
     yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-) -> Callable[[Axes], None]:
+) -> AxisConfig:
     """
     Parameters:
     ---

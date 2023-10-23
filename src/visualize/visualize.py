@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import numpy as np
 
 import matplotlib as mpl
@@ -7,12 +8,16 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import Callable, List, Literal, NamedTuple
+from typing import Callable, List, Literal
 
 
-class XY(NamedTuple):
+@dataclass()
+class XY:
     x: np.ndarray
     y: np.ndarray
+
+    def to_tuple(self) -> tuple[np.ndarray, np.ndarray]:
+        return (self.x, self.y)
 
 
 def parameter():
@@ -42,7 +47,7 @@ def arrange_row_1axis_nxy(
     ax = fig.axes[0]
 
     for xy in xys:
-        ax.plot(*xy)
+        ax.plot(*xy.to_tuple())
         ax_func(ax)
 
     fig.supxlabel(xlabel)
@@ -68,7 +73,7 @@ def arrange_row_naxis_nxy(
     axs = fig.axes
 
     for ax, xy in zip(axs, xys):
-        ax.plot(*xy)
+        ax.plot(*xy.to_tuple())
         ax_func(ax)
 
     # set labels on the center of figure

@@ -31,23 +31,17 @@ def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> XY:
         sys.exit(1)
 
 
-def slide_XYs_linear(xys: list[XY], slide: float, reverse=False) -> list[XY]:
+def slide_XYs_linear(xys: list[XY], slide: float, reverse=False):
     if reverse:
         xys.reverse()
-    newxy: list[XY] = []
 
     for i, xy in enumerate(xys):
-        y = xy.y + (slide * i)
-        newxy.append(XY(xy.x, y))
-
-    return newxy
+        xy.y += slide * i
 
 
-def slide_XYs_log(xys: list[XY], slide: int, reverse=False) -> list[XY]:
+def slide_XYs_log(xys: list[XY], slide: int, base=1.0, reverse=False):
     if reverse:
         xys.reverse()
-    newxy: list[XY] = []
-    for i, xy in enumerate(xys, 0):
-        y = (xy.y + 1) * 10 ** (slide * i)
-        newxy.append(XY(xy.x, y))
-    return newxy
+
+    for i, xy in enumerate(xys):
+        xy.y = (xy.y + 1) * base * 10 ** (slide * i)

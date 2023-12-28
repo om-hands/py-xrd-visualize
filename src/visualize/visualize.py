@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 import numpy as np
 
 import matplotlib as mpl
@@ -8,7 +9,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import Callable, List, Literal, TypeAlias
+from typing import Callable, Literal, TypeAlias
 
 
 @dataclass()
@@ -19,7 +20,8 @@ class XY:
     def to_tuple(self) -> tuple[np.ndarray, np.ndarray]:
         return (self.x, self.y)
 
-AxisConfig: TypeAlias = Callable[[Axes, XY], None]
+
+axis_conf_func: TypeAlias = Callable[[Axes], None]
 
 
 def parameter():
@@ -32,35 +34,38 @@ def parameter():
 
 
 def arrange_row_1axis_nxy(
-    xys: List[XY],
+    xys: list[XY],
     legends: list[str],
-    ax_func: AxisConfig,
+    ax_func: axis_conf_func,
     xlabel: str,
     ylabel: str,
 ) -> Figure:
     """
     Parameters:
         `xys`:xy-styled input data.
+
         `ax_func`:plot xy on ax.
+
         `xlabel`,`ylabel`:axis label.
-
-
     """
     fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
     ax = fig.axes[0]
 
     for xy in xys:
-        ax_func(ax, xy)
+        ax.plot(*xy.to_tuple())
+        ax_func(ax)
+
     ax.legend(legends)
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
+
     return fig
 
 
 def arrange_row_naxis_nxy(
-    xys: List[XY],
+    xys: list[XY],
     legends: list[str],
-    ax_func: AxisConfig,
+    ax_func: axis_conf_func,
     xlabel: str,
     ylabel: str,
 ) -> Figure:
@@ -69,20 +74,25 @@ def arrange_row_naxis_nxy(
     Parameters:
     ---
         `xys`:xy-styled input data.
+
         `ax_func`:plot xy on ax.
+
         `xlabel`,`ylabel`:axis label.
     """
     fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
     axs = fig.axes
 
     for ax, xy in zip(axs, xys):
-        ax_func(ax, xy)
+        ax.plot(*xy.to_tuple())
+        ax_func(ax)
+
+    # set legends
+    fig.legend(legends)
 
     # set labels on the center of figure
     fig.supxlabel(xlabel)
     fig.supylabel(ylabel)
 
-    fig.legend(legends)
     return fig
 
 
@@ -93,7 +103,7 @@ def arrange_row_default_conf(
     major_locator: ticker.Locator = ticker.AutoLocator(),
     xscale: Literal["linear", "log", "symlog", "logit"] = "linear",
     yscale: Literal["linear", "log", "symlog", "logit"] = "linear",
-) -> AxisConfig:
+) -> axis_conf_func:
     """
     Parameters:
     ---
@@ -111,6 +121,11 @@ def arrange_row_default_conf(
     """
 
     def lambda_(ax: Axes):
+        # ax.plot(*xy.to_tuple(), label=leg)
+        # ax.legend()
+        # ax.plot(*xy.to_tuple())
+        # ax.legend(leg)
+
         # scale
         ax.set_xscale(xscale)
         ax.set_yscale(yscale)

@@ -23,18 +23,19 @@ def Test_arrange_dummy_sine():
     range_ = (0, 2 * np.pi)
     xys = [generate_xy(range_, np.sin)]
 
-    visualize.arrange_row_naxis_nxy(
+    fig = visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["legend"],
-        ax_func=visualize.default_conf_naxis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             yscale="linear",
         ),
         xlabel=r"$2\theta[°]$",
         ylabel=r"$Intensity[arb. unit]$",
-    ).tight_layout()
+    )
 
     plt.suptitle("dummysine")
+    fig.tight_layout()
     plt.show()
 
 
@@ -45,7 +46,7 @@ def Test_arrange_row_1axis_nxy_dummy_log():
     visualize.arrange_row_1axis_nxy(
         xys=xys,
         legends=["legend"],
-        ax_func=visualize.default_conf_1axis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             xscale="log",
             yscale="log",
@@ -66,8 +67,10 @@ def Test_arrange_dummy_log():
     visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["dummy log"],
-        ax_func=visualize.default_conf_naxis_nxy(
-            range_=range_, xscale="log", yscale="log"
+        ax_func=visualize.arrange_row_default_conf(
+            range_=range_,
+            xscale="log",
+            yscale="log",
         ),
         xlabel=r"log(x)",
         ylabel=r"log(y)",
@@ -85,7 +88,7 @@ def test_arrange_dummy_nth(n: int):
     axs = visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["dummy:" + str(i) for i in range(n)],
-        ax_func=visualize.default_conf_naxis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             yscale="linear",
         ),
@@ -109,7 +112,7 @@ def Test_slide_XYs_linear():
     visualize.arrange_row_1axis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_1axis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             yscale="linear",
         ),
@@ -130,7 +133,7 @@ def Test_slide_XYs_log():
     visualize.arrange_row_1axis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_1axis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             yscale="log",
         ),
@@ -156,7 +159,7 @@ def test_arrange_row_1axis_nxy_dummy_nth(n: int):
     axs = visualize.arrange_row_1axis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_1axis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=range_,
             yscale="linear",
         ),
@@ -181,7 +184,7 @@ def Test_arrange_rawdata():
     ax = visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_naxis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=(38.2, 39.0),
             ymax=50,
             yscale="log",
@@ -202,7 +205,7 @@ def test_arrange_rawdata_nth(n: int):
     visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_naxis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=(38.2, 39),
             ymax=50,
             yscale="log",
@@ -271,7 +274,7 @@ def Test_arrange_rawdata2():
     visualize.arrange_row_naxis_nxy(
         xys=xys,
         legends=["xy linear:" + str(i) for i in range(5)],
-        ax_func=visualize.default_conf_naxis_nxy(
+        ax_func=visualize.arrange_row_default_conf(
             range_=(30.0, 30.5),
             ymax=50,
             ymin=1,

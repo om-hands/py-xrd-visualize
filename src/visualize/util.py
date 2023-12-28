@@ -31,17 +31,11 @@ def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> XY:
         sys.exit(1)
 
 
-def slide_XYs_linear(xys: list[XY], slide: float, reverse=False):
-    if reverse:
-        xys.reverse()
-
+def slide_XYs_linear(xys: list[XY], slide: float):
     for i, xy in enumerate(xys):
         xy.y += slide * i
 
 
-def slide_XYs_log(xys: list[XY], slide: int, base=1.0, reverse=False):
-    if reverse:
-        xys.reverse()
-
+def slide_XYs_log(xys: list[XY], slide: float, base: float = 1.0):
     for i, xy in enumerate(xys):
         xy.y = (xy.y + 1) * base * 10 ** (slide * i)

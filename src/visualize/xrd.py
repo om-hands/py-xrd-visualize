@@ -8,7 +8,16 @@ from matplotlib.figure import Figure
 
 
 from src.visualize import util, visualize
-from src.visualize.visualize import XY
+from src.visualize.visualize import (
+    XY,
+    ax_conf_pass,
+    axis_conf_func,
+    fig_conf_func,
+    fig_conf_pass,
+    fig_func_label,
+    multi_ax_func,
+    multi_fig_func,
+)
 
 
 @dataclass()
@@ -25,6 +34,8 @@ def fig_2θ_ω_1axis(
     legends: list[str],
     scantimes_sec: list[float],
     range_: tuple[float, float],
+    ax_func: axis_conf_func = ax_conf_pass,
+    fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     slide_exp: float = 2,
@@ -48,33 +59,24 @@ def fig_2θ_ω_1axis(
     if reverse_legends:
         legends.reverse()
 
-    def ax_func(ax: Axes):
-        visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log")(ax)
-
+    def ax_func_xrd(ax: Axes):
         # y axis: log scale
         ax.yaxis.set_major_locator(ticker.LogLocator(10))
         # don't show y value
         ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
-    return visualize.arrange_row_1axis_nxy(
+    fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
         legends=legends,
-        ax_func=ax_func,
-        xlabel=xlabel,
-        ylabel=ylabel,
+        ax_func=multi_ax_func(
+            visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log"),
+            ax_func_xrd,
+            ax_func,
+        ),
+        fig_func=multi_fig_func(
+            fig_func_label(xlabel, ylabel),
+            fig_conf,
+        ),
     )
 
-
-def fig_conf(
-    fig: Figure,
-    dpi: float | None = None,
-    figratio: tuple[float, float] | None = None,
-    pad: float = 0.4,
-):
-    if dpi is not None:
-        fig.set_dpi(dpi)
-
-    if figratio is not None:
-        fig.set_size_inches(*figratio)
-
-    fig.tight_layout(pad=pad)
+    return fig

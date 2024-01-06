@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 import numpy as np
 
 import matplotlib as mpl
@@ -22,6 +21,7 @@ class XY:
 
 
 axis_conf_func: TypeAlias = Callable[[Axes], None]
+fig_conf_func: TypeAlias = Callable[[Figure], None]
 
 
 def parameter():
@@ -37,8 +37,7 @@ def arrange_row_1axis_nxy(
     xys: list[XY],
     legends: list[str],
     ax_func: axis_conf_func,
-    xlabel: str,
-    ylabel: str,
+    fig_func: fig_conf_func,
 ) -> Figure:
     """
     Parameters:
@@ -46,7 +45,6 @@ def arrange_row_1axis_nxy(
 
         `ax_func`:plot xy on ax.
 
-        `xlabel`,`ylabel`:axis label.
     """
     fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
     ax = fig.axes[0]
@@ -55,9 +53,9 @@ def arrange_row_1axis_nxy(
         ax.plot(*xy.to_tuple())
         ax_func(ax)
 
+    # set legends in one ax
     ax.legend(legends)
-    fig.supxlabel(xlabel)
-    fig.supylabel(ylabel)
+    fig_func(fig)
 
     return fig
 
@@ -66,8 +64,7 @@ def arrange_row_naxis_nxy(
     xys: list[XY],
     legends: list[str],
     ax_func: axis_conf_func,
-    xlabel: str,
-    ylabel: str,
+    fig_func: fig_conf_func,
 ) -> Figure:
     """
     Returns a figure with n data plotted on n axes each.
@@ -88,10 +85,7 @@ def arrange_row_naxis_nxy(
 
     # set legends
     fig.legend(legends)
-
-    # set labels on the center of figure
-    fig.supxlabel(xlabel)
-    fig.supylabel(ylabel)
+    fig_func(fig)
 
     return fig
 
@@ -147,6 +141,55 @@ def arrange_row_default_conf(
 
         # ticklabel
         # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
-        ax.set_yticklabels([])
+        # ax.set_yticklabels([])
 
     return lambda_
+
+
+def fig_conf_show(
+    dpi: float | None = None,
+    figratio: tuple[float, float] | None = None,
+    pad: float = 0.4,
+) -> fig_conf_func:
+    def fig_conf(fig: Figure):
+        if dpi is not None:
+            fig.set_dpi(dpi)
+
+        if figratio is not None:
+            fig.set_size_inches(*figratio)
+
+        fig.tight_layout(pad=pad)
+
+    return fig_conf
+
+
+def fig_func_label(xlabel, ylabel: str) -> fig_conf_func:
+    def fig_conf(fig: Figure):
+        fig.supxlabel(xlabel)
+        fig.supylabel(ylabel)
+
+    return fig_conf
+
+
+def multi_fig_func(*fig_confs: fig_conf_func) -> fig_conf_func:
+    def fig_conf(fig: Figure):
+        for f in fig_confs:
+            f(fig)
+
+    return fig_conf
+
+
+def multi_ax_func(*ax_confs: axis_conf_func) -> axis_conf_func:
+    def ax_conf(ax: Axes):
+        for f in ax_confs:
+            f(ax)
+
+    return ax_conf
+
+
+def ax_conf_pass(ax: Axes):
+    pass
+
+
+def fig_conf_pass(fig: Figure):
+    pass

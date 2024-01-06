@@ -157,7 +157,7 @@ def fig_ω_scan_1axis(
 
             [amp, center, sigma] = popt[0:3]
             annote = "amp:{:.3g},center:{:.3g},sigma:{:.3g},HWFM:{:.3g}".format(
-                amp, center, sigma, sigma * 2.354
+                amp, center, sigma, sigma * 2.355
             )
             ax.annotate(
                 annote,

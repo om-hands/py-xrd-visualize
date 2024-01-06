@@ -5,7 +5,7 @@ import pathlib
 
 
 import xrd_xy_parser.xy as xrdxy
-from src.visualize.visualize import XY
+from visualize.visualize import XY
 
 
 def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> XY:

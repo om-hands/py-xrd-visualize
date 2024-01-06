@@ -2,9 +2,9 @@ from io import TextIOBase
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from src.visualize.visualize import fig_conf_show
+from visualize.visualize import fig_conf_show
 
-from src.visualize.xrd import fig_2θ_ω_1axis
+from visualize.xrd import fig_2θ_ω_1axis
 
 
 def plot_2θ_ω_1axis():

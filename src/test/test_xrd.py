@@ -2,9 +2,10 @@ from io import TextIOBase
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from visualize import util
 from visualize.visualize import fig_conf_show
 
-from visualize.xrd import fig_2θ_ω_1axis
+from visualize.xrd import fig_2θ_ω_1axis, fig_ω_scan_1axis
 
 
 def plot_2θ_ω_1axis():
@@ -20,12 +21,37 @@ def plot_2θ_ω_1axis():
         range_=(38.2, 39.0),
         fig_conf=fig_conf_show(),
     )
+    plt.show()
+    # fig.savefig()
 
-    # fig_conf(fig, dpi=100, figratio=(4, 4))
 
+def plot_ω_scan_1axis():
+    paths: list[TextIOBase | str | Path] = list(
+        map(
+            lambda x: Path("src/test/") / x,
+            [
+                "test_rock_13-19_0.01deg.xy",
+                # "test_rock_14.5-16.5_0.01deg.xy",
+                "test_rock_13.5-20.5_0.01deg.xy",
+            ],
+        )
+    )
+
+    print(paths)
+    fig = fig_ω_scan_1axis(
+        paths=paths,
+        legends=["test1", "test2"],
+        amps=[1400, 35],
+        # range_=(-3.5, 3.5),
+        range_=(-4, 4),
+        # optimize_func=util.gauss,
+        show_optparam=True,
+        fig_conf=fig_conf_show(),
+    )
     plt.show()
     # fig.savefig()
 
 
 if __name__ == "__main__":
-    plot_2θ_ω_1axis()
+    # plot_2θ_ω_1axis()
+    plot_ω_scan_1axis()

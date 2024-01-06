@@ -3,6 +3,8 @@ import sys
 import io
 import pathlib
 
+import numpy as np
+import scipy
 
 import xrd_xy_parser.xy as xrdxy
 from visualize.visualize import XY
@@ -39,3 +41,25 @@ def slide_XYs_linear(xys: list[XY], slide: float):
 def slide_XYs_log(xys: list[XY], slide: float, base: float = 1.0):
     for i, xy in enumerate(xys):
         xy.y = (xy.y + 1) * base * 10 ** (slide * i)
+
+
+def gauss(x, amp, center, sigma):
+    return amp * np.exp(-((x - center) ** 2) / (2 * sigma**2))
+
+
+def voigt(x, amp, center, gw, lw):
+    """
+    https://qiita.com/yamadasuzaku/items/4fccdc90fa13746af1e1
+
+    Parameters:
+        `amp` : amplitude
+        `center `: center of Lorentzian line
+        `gw` : sigma of the gaussian
+        `lw` : FWHM of Lorentzian
+
+    """
+
+    z = (x - center + 1j * lw) / (gw * np.sqrt(2.0))
+    w = scipy.special.wofz(z)
+    y = amp * (w.real) / (gw * np.sqrt(2.0 * np.pi))
+    return y

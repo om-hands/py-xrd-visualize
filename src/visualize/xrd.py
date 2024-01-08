@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from io import TextIOBase
 from pathlib import Path
-from typing import Callable, NamedTuple, Tuple
+from typing import Callable
 
 from matplotlib import ticker
 from matplotlib.axes import Axes
@@ -39,10 +39,12 @@ def fig_2θ_ω_1axis(
     scantimes_sec: list[float],
     range_: tuple[float, float],
     ax_func: axis_conf_func = ax_conf_pass,
-    ax_legends: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
+    legends: list[str] = [],
+    legend_title: str = "",
+    legend_reverse: bool = False,
     slide_exp: float = 2,
     slide_base: float = 1.0,
 ) -> Figure:
@@ -65,7 +67,7 @@ def fig_2θ_ω_1axis(
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
-        ax_legends=ax_legends,
+        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log"),
             ax_func_xrd,
@@ -85,10 +87,12 @@ def fig_ω_scan_1axis(
     amps: list[float],
     range_: tuple[float, float],
     ax_func: axis_conf_func = ax_conf_pass,
-    ax_legends: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "ω(deg.)",
     ylabel: str = "Intensity(arb. unit)",
+    legends: list[str] = [],
+    legend_title: str = "",
+    legend_reverse: bool = False,
     optimize_func: Callable = util.voigt,
     show_optparam: bool = False,
 ) -> Figure:
@@ -136,7 +140,7 @@ def fig_ω_scan_1axis(
             return
 
         ax = fig.axes[0]
-        for i, popt in enumerate(popts, 1):
+        for popt, legend in zip(popts, legends):
             x = np.linspace(*range_)
             # center(x)=0
             y = np.vectorize(optimize_func)(x, popt[0], 0, *popt[2:])
@@ -147,21 +151,24 @@ def fig_ω_scan_1axis(
             ax.plot(x, y)
 
             [amp, center, sigma] = popt[0:3]
-            annote = "amp:{:.3g},center:{:.3g},sigma:{:.3g},HWFM:{:.3g}".format(
-                amp, center, sigma, sigma * 2.355
+            annote = "{}::amp:{:#.3g},center:{:#.3g},sigma:{:#.3g},HWFM:{:#.3g}".format(
+                legend, amp, center, sigma, sigma * 2.355
             )
             ax.annotate(
                 annote,
-                xy=(sigma, 0.4 * i),
-                horizontalalignment="center",
+                xy=(sigma, 0.3 + 0.3 * sigma),
+                horizontalalignment="left",
                 verticalalignment="baseline",
             )
-            print("optimized param:", popt)
+        print("optimized param")
+        for popt, legend in zip(popts, legends):
+            print(f"{legend}:{popt}")
+
         fig.suptitle("fit:{}".format(optimize_func.__name__))
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
-        ax_legends=ax_legends,
+        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             visualize.arrange_row_default_conf(
                 range_, xscale="linear", yscale="linear"
@@ -178,34 +185,3 @@ def fig_ω_scan_1axis(
     )
 
     return fig
-
-
-@dataclass
-class Annotater:
-    x: float
-    y: float
-    label: str
-    label_offset: Tuple[float, float] = (0, 0)
-
-    def label_pos(self) -> Tuple[float, float]:
-        (ox, oy) = self.label_offset
-        return (self.x + ox, self.y + oy)
-
-
-def ax_func_horizontal_annotates(
-    common_y: float, annotes: list[Annotater], textcoords="data"
-) -> axis_conf_func:
-    def ax_func(ax: Axes):
-        for annote in annotes:
-            annote.y = common_y
-            ax.scatter(annote.x, annote.y)
-            ax.annotate(
-                text=annote.label,
-                xy=(annote.x, common_y),
-                xytext=annote.label_pos(),
-                horizontalalignment="center",
-                verticalalignment="baseline",
-                textcoords=textcoords,
-            )
-
-    return ax_func

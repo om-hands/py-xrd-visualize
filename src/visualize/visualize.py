@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import Callable, Literal, TypeAlias
+from typing import Callable, Literal, Tuple, TypeAlias
 
 
 @dataclass()
@@ -209,3 +209,34 @@ def ax_default_legends(
         ax.legend(legends, title=title, reverse=reverse)
 
     return axis_func
+
+
+@dataclass
+class Annotater:
+    x: float
+    y: float
+    label: str
+    label_offset: Tuple[float, float] = (0, 0)
+
+    def label_pos(self) -> Tuple[float, float]:
+        (ox, oy) = self.label_offset
+        return (self.x + ox, self.y + oy)
+
+
+def ax_func_horizontal_annotates(
+    common_y: float, annotes: list[Annotater], textcoords="data"
+) -> axis_conf_func:
+    def ax_func(ax: Axes):
+        for annote in annotes:
+            annote.y = common_y
+            ax.scatter(annote.x, annote.y)
+            ax.annotate(
+                text=annote.label,
+                xy=(annote.x, common_y),
+                xytext=annote.label_pos(),
+                horizontalalignment="center",
+                verticalalignment="baseline",
+                textcoords=textcoords,
+            )
+
+    return ax_func

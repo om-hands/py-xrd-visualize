@@ -1,12 +1,18 @@
 from io import TextIOBase
 from pathlib import Path
+from matplotlib.axes import Axes
 
 import matplotlib.pyplot as plt
-from visualize.visualize import ax_default_legends, fig_conf_show
+from visualize import util
+from visualize.visualize import (
+    Annotater,
+    ax_conf_pass,
+    ax_default_legends,
+    ax_func_horizontal_annotates,
+    fig_conf_show,
+)
 
 from visualize.xrd import (
-    Annotater,
-    ax_func_horizontal_annotates,
     fig_2θ_ω_1axis,
     fig_ω_scan_1axis,
 )
@@ -21,9 +27,11 @@ def plot_2θ_ω_1axis():
     fig = fig_2θ_ω_1axis(
         paths,
         [1, 1, 1],
+        legends=["test1", "test2", "test3"],
+        legend_title="2th omega",
+        legend_reverse=True,
         range_=(10, 70),
         # range_=(38.2, 39.0),
-        ax_legends=ax_default_legends(["test1", "test2", "test3"]),
         ax_func=ax_func_horizontal_annotates(
             10,
             [
@@ -50,12 +58,14 @@ def plot_ω_scan_1axis():
     )
 
     print(paths)
+
     fig = fig_ω_scan_1axis(
         paths=paths,
         amps=[1400, 35],
+        legends=["test1", "test2noisy"],
         range_=(-4, 4),
-        ax_legends=ax_default_legends(["test1", "test2"]),
-        # optimize_func=util.gauss,
+        # ax_legends=ax_default_legends(["test1", "test2"]),
+        optimize_func=util.gauss,
         show_optparam=True,
         fig_conf=fig_conf_show(),
     )

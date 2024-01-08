@@ -2,9 +2,7 @@ from io import TextIOBase
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.text import Annotation
-from visualize import util
-from visualize.visualize import fig_conf_show
+from visualize.visualize import ax_default_legends, fig_conf_show
 
 from visualize.xrd import (
     Annotater,
@@ -22,14 +20,15 @@ def plot_2θ_ω_1axis():
     print(paths)
     fig = fig_2θ_ω_1axis(
         paths,
-        ["test1", "test2", "test3"],
         [1, 1, 1],
-        range_=(38.2, 39.0),
+        range_=(10, 70),
+        # range_=(38.2, 39.0),
+        ax_legends=ax_default_legends(["test1", "test2", "test3"]),
         ax_func=ax_func_horizontal_annotates(
             10,
             [
-                Annotater(38.5, 10, "38.5,10-5", (0.0, -5)),
-                Annotater(38.7, 10, "aaaa"),
+                Annotater(38.5, 0, "38.5,10-5", (0.0, -5)),
+                Annotater(38.7, 0, "aaaa"),
             ],
         ),
         fig_conf=fig_conf_show(),
@@ -53,10 +52,9 @@ def plot_ω_scan_1axis():
     print(paths)
     fig = fig_ω_scan_1axis(
         paths=paths,
-        legends=["test1", "test2"],
         amps=[1400, 35],
-        # range_=(-3.5, 3.5),
         range_=(-4, 4),
+        ax_legends=ax_default_legends(["test1", "test2"]),
         # optimize_func=util.gauss,
         show_optparam=True,
         fig_conf=fig_conf_show(),

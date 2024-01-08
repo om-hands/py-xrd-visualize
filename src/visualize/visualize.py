@@ -35,7 +35,7 @@ def parameter():
 
 def arrange_row_1axis_nxy(
     xys: list[XY],
-    legends: list[str],
+    ax_legends: axis_conf_func,
     ax_func: axis_conf_func,
     fig_func: fig_conf_func,
 ) -> Figure:
@@ -52,8 +52,8 @@ def arrange_row_1axis_nxy(
     for xy in xys:
         ax.plot(*xy.to_tuple())
 
-    # set legends in one ax
-    ax.legend(legends)
+    # set legends in one ax just after plot
+    ax_legends(ax)
 
     # set somethings after set legend
     ax_func(ax)
@@ -200,3 +200,12 @@ def ax_conf_pass(ax: Axes):
 
 def fig_conf_pass(fig: Figure):
     pass
+
+
+def ax_default_legends(
+    legends: list[str], title: str = "", reverse=False
+) -> axis_conf_func:
+    def axis_func(ax: Axes):
+        ax.legend(legends, title=title, reverse=reverse)
+
+    return axis_func

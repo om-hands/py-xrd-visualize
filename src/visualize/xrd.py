@@ -14,9 +14,11 @@ from visualize import util, visualize
 from visualize.visualize import (
     XY,
     ax_conf_pass,
+    ax_default_legends,
     axis_conf_func,
     fig_conf_func,
     fig_conf_pass,
+    fig_conf_show,
     fig_func_label,
     multi_ax_func,
     multi_fig_func,
@@ -34,17 +36,15 @@ class Scaned:
 
 def fig_2θ_ω_1axis(
     paths: list[TextIOBase | str | Path],
-    legends: list[str],
     scantimes_sec: list[float],
     range_: tuple[float, float],
     ax_func: axis_conf_func = ax_conf_pass,
+    ax_legends: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     slide_exp: float = 2,
     slide_base: float = 1.0,
-    reverse_legends: bool = False,
-    reverse_xy: bool = False,
 ) -> Figure:
     xys: list[XY] = []
     for p in paths:
@@ -54,13 +54,8 @@ def fig_2θ_ω_1axis(
     for xy, st in zip(xys, scantimes_sec):
         xy.y /= st
 
-    if reverse_xy:
-        xys.reverse()
     # slide after reverse
     util.slide_XYs_log(xys, slide_exp, slide_base)
-
-    if reverse_legends:
-        legends.reverse()
 
     def ax_func_xrd(ax: Axes):
         # y axis: log scale
@@ -70,7 +65,7 @@ def fig_2θ_ω_1axis(
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
-        legends=legends,
+        ax_legends=ax_legends,
         ax_func=multi_ax_func(
             visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log"),
             ax_func_xrd,
@@ -87,23 +82,19 @@ def fig_2θ_ω_1axis(
 
 def fig_ω_scan_1axis(
     paths: list[TextIOBase | str | Path],
-    legends: list[str],
     amps: list[float],
     range_: tuple[float, float],
     ax_func: axis_conf_func = ax_conf_pass,
+    ax_legends: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "ω(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     optimize_func: Callable = util.voigt,
     show_optparam: bool = False,
-    reverse_legends: bool = False,
 ) -> Figure:
     xys: list[XY] = []
     for p in paths:
         xys.append(util.read_xy(p))
-
-    if reverse_legends:
-        legends.reverse()
 
     # shift x-axis to center roughly
     for xy in xys:
@@ -170,7 +161,7 @@ def fig_ω_scan_1axis(
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
-        legends=legends,
+        ax_legends=ax_legends,
         ax_func=multi_ax_func(
             visualize.arrange_row_default_conf(
                 range_, xscale="linear", yscale="linear"
@@ -179,9 +170,10 @@ def fig_ω_scan_1axis(
             ax_func,
         ),
         fig_func=multi_fig_func(
+            fig_conf,
             fig_func_label(xlabel, ylabel),
             fig_func_opt,
-            fig_conf,
+            fig_conf_show(),
         ),
     )
 

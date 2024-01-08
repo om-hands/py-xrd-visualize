@@ -188,7 +188,8 @@ def fig_ω_scan_1axis(
     return fig
 
 
-class Annotater(NamedTuple):
+@dataclass
+class Annotater:
     x: float
     y: float
     label: str
@@ -204,7 +205,8 @@ def ax_func_horizontal_annotates(
 ) -> axis_conf_func:
     def ax_func(ax: Axes):
         for annote in annotes:
-            ax.scatter(annote.x, common_y)
+            annote.y = common_y
+            ax.scatter(annote.x, annote.y)
             ax.annotate(
                 text=annote.label,
                 xy=(annote.x, common_y),

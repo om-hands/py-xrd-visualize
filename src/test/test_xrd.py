@@ -2,10 +2,16 @@ from io import TextIOBase
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.text import Annotation
 from visualize import util
 from visualize.visualize import fig_conf_show
 
-from visualize.xrd import fig_2θ_ω_1axis, fig_ω_scan_1axis
+from visualize.xrd import (
+    Annotater,
+    ax_func_horizontal_annotates,
+    fig_2θ_ω_1axis,
+    fig_ω_scan_1axis,
+)
 
 
 def plot_2θ_ω_1axis():
@@ -19,6 +25,13 @@ def plot_2θ_ω_1axis():
         ["test1", "test2", "test3"],
         [1, 1, 1],
         range_=(38.2, 39.0),
+        ax_func=ax_func_horizontal_annotates(
+            10,
+            [
+                Annotater(38.5, 10, "38.5,10-5", (0.0, -5)),
+                Annotater(38.7, 10, "aaaa"),
+            ],
+        ),
         fig_conf=fig_conf_show(),
     )
     plt.show()
@@ -53,5 +66,5 @@ def plot_ω_scan_1axis():
 
 
 if __name__ == "__main__":
-    # plot_2θ_ω_1axis()
-    plot_ω_scan_1axis()
+    plot_2θ_ω_1axis()
+    # plot_ω_scan_1axis()

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from io import TextIOBase
 from pathlib import Path
-from typing import Callable, 
+from typing import Callable, NamedTuple, Tuple
 
 from matplotlib import ticker
 from matplotlib.axes import Axes
@@ -186,3 +186,32 @@ def fig_ω_scan_1axis(
     )
 
     return fig
+
+
+class Annotater(NamedTuple):
+    x: float
+    y: float
+    label: str
+    label_offset: Tuple[float, float] = (0, 0)
+
+    def label_pos(self) -> Tuple[float, float]:
+        (ox, oy) = self.label_offset
+        return (self.x + ox, self.y + oy)
+
+
+def ax_func_horizontal_annotates(
+    common_y: float, annotes: list[Annotater], textcoords="data"
+) -> axis_conf_func:
+    def ax_func(ax: Axes):
+        for annote in annotes:
+            ax.scatter(annote.x, common_y)
+            ax.annotate(
+                text=annote.label,
+                xy=(annote.x, common_y),
+                xytext=annote.label_pos(),
+                horizontalalignment="center",
+                verticalalignment="baseline",
+                textcoords=textcoords,
+            )
+
+    return ax_func

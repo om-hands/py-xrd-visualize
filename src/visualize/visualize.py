@@ -51,10 +51,13 @@ def arrange_row_1axis_nxy(
 
     for xy in xys:
         ax.plot(*xy.to_tuple())
-        ax_func(ax)
 
     # set legends in one ax
     ax.legend(legends)
+
+    # set somethings after set legend
+    ax_func(ax)
+
     fig_func(fig)
 
     return fig
@@ -81,10 +84,14 @@ def arrange_row_naxis_nxy(
 
     for ax, xy in zip(axs, xys):
         ax.plot(*xy.to_tuple())
-        ax_func(ax)
 
     # set legends
     fig.legend(legends)
+
+    for ax in axs:
+        ax_func(ax)
+
+    # set somethings after set legend
     fig_func(fig)
 
     return fig

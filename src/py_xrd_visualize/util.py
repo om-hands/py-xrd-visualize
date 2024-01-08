@@ -7,7 +7,7 @@ import numpy as np
 import scipy
 
 import xrd_xy_parser.xy as xrdxy
-from visualize.visualize import XY
+from py_xrd_visualize.visualize import XY
 
 
 def read_xy(target_file: io.TextIOBase | str | pathlib.Path) -> XY:

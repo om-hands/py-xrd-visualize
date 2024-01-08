@@ -3,8 +3,8 @@ from pathlib import Path
 from matplotlib.axes import Axes
 
 import matplotlib.pyplot as plt
-from visualize import util
-from visualize.visualize import (
+from py_xrd_visualize import util
+from py_xrd_visualize.visualize import (
     Annotater,
     ax_conf_pass,
     ax_default_legends,
@@ -12,7 +12,7 @@ from visualize.visualize import (
     fig_conf_show,
 )
 
-from visualize.xrd import (
+from py_xrd_visualize.xrd import (
     fig_2θ_ω_1axis,
     fig_ω_scan_1axis,
 )
@@ -20,7 +20,7 @@ from visualize.xrd import (
 
 def plot_2θ_ω_1axis():
     paths: list[TextIOBase | str | Path] = list(
-        map(lambda x: Path(x), ["src/test/test.xy"] * 3)
+        map(lambda x: Path("src/test/") / x, ["test.xy"] * 2)
     )
 
     print(paths)
@@ -65,7 +65,7 @@ def plot_ω_scan_1axis():
         legends=["test1", "test2noisy"],
         range_=(-4, 4),
         # ax_legends=ax_default_legends(["test1", "test2"]),
-        optimize_func=util.gauss,
+        # optimize_func=util.gauss(),
         show_optparam=True,
         fig_conf=fig_conf_show(),
     )
@@ -75,4 +75,4 @@ def plot_ω_scan_1axis():
 
 if __name__ == "__main__":
     plot_2θ_ω_1axis()
-    # plot_ω_scan_1axis()
+    plot_ω_scan_1axis()

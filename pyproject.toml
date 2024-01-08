@@ -24,4 +24,4 @@ managed = true
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-    packages = ["src/visualize"]
+    packages = ["src/py_xrd_visualize"]

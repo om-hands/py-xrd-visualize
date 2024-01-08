@@ -10,8 +10,8 @@ import numpy as np
 
 from scipy.optimize import curve_fit
 
-from visualize import util, visualize
-from visualize.visualize import (
+from py_xrd_visualize import util, visualize
+from py_xrd_visualize.visualize import (
     XY,
     ax_conf_pass,
     ax_default_legends,
@@ -111,9 +111,6 @@ def fig_ω_scan_1axis(
         for amp in amps:
             p0s.append([amp, 0, 1])
 
-    # elif optimize_func == util.voigt:
-    #     for amp in amps:
-    #         p0s.append([amp, 0, 1, 1])
     popts = []
     for xy, p0 in zip(xys, p0s):
         popt, _ = curve_fit(optimize_func, xdata=xy.x, ydata=xy.y, p0=p0)

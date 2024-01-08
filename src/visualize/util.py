@@ -44,10 +44,14 @@ def slide_XYs_log(xys: list[XY], slide: float, base: float = 1.0):
 
 
 def gauss(x, amp, center, sigma):
+    """
+    parameter order:
+        [amp, center, sigma]
+    """
     return amp * np.exp(-((x - center) ** 2) / (2 * sigma**2))
 
 
-def voigt(x, amp, center, gw, lw):
+def __voigt(x, amp, center, gw, lw):
     """
     https://qiita.com/yamadasuzaku/items/4fccdc90fa13746af1e1
 

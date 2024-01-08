@@ -93,7 +93,7 @@ def fig_ω_scan_1axis(
     legends: list[str] = [],
     legend_title: str = "",
     legend_reverse: bool = False,
-    optimize_func: Callable = util.voigt,
+    optimize_func: Callable = util.gauss,
     show_optparam: bool = False,
 ) -> Figure:
     xys: list[XY] = []
@@ -111,9 +111,9 @@ def fig_ω_scan_1axis(
         for amp in amps:
             p0s.append([amp, 0, 1])
 
-    elif optimize_func == util.voigt:
-        for amp in amps:
-            p0s.append([amp, 0, 1, 1])
+    # elif optimize_func == util.voigt:
+    #     for amp in amps:
+    #         p0s.append([amp, 0, 1, 1])
     popts = []
     for xy, p0 in zip(xys, p0s):
         popt, _ = curve_fit(optimize_func, xdata=xy.x, ydata=xy.y, p0=p0)

@@ -51,6 +51,15 @@ def gauss(x, amp, center, sigma):
     return amp * np.exp(-((x - center) ** 2) / (2 * sigma**2))
 
 
+def gauss_const_bg(x, amp, center, sigma, const_):
+    """
+    parameter order:
+        [amp, center, sigma]
+        const_:constant background
+    """
+    return amp * np.exp(-((x - center) ** 2) / (2 * sigma**2)) + const_
+
+
 def __voigt(x, amp, center, gw, lw):
     """
     https://qiita.com/yamadasuzaku/items/4fccdc90fa13746af1e1

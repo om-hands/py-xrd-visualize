@@ -93,7 +93,7 @@ def fig_ω_scan_1axis(
     legends: list[str] = [],
     legend_title: str = "",
     legend_reverse: bool = False,
-    optimize_func: Callable = util.gauss,
+    optimize_func: Callable = util.gauss_const_bg,
     show_optparam: bool = False,
 ) -> Figure:
     xys: list[XY] = []
@@ -110,7 +110,9 @@ def fig_ω_scan_1axis(
     if optimize_func == util.gauss:
         for amp in amps:
             p0s.append([amp, 0, 1])
-
+    elif optimize_func == util.gauss_const_bg:
+        for amp in amps:
+            p0s.append([amp, 0, 1, 1])
     popts = []
     for xy, p0 in zip(xys, p0s):
         popt, _ = curve_fit(optimize_func, xdata=xy.x, ydata=xy.y, p0=p0)

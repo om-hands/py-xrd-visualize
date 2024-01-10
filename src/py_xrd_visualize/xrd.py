@@ -134,35 +134,43 @@ def fig_ω_scan_1axis(
         # don't show y value
         ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
-    def ax_func_opt(ax: Axes):
+    def ax_func_opt(legends: list[str]):
         if not show_optparam:
-            return
+            return ax_conf_pass
 
-        for popt, legend in zip(popts, legends):
-            x = np.linspace(*range_)
-            # center(x)=0
-            y = np.vectorize(optimize_func)(x, popt[0], 0, *popt[2:])
-            # y=1 on x=0
-            y /= np.max(y)
+        if len(legends) == 0:
+            legends = [f"{i}" for i, _ in enumerate(popts)]
 
-            # plot fit curve
-            ax.plot(x, y)
+        def ax_func(ax: Axes):
+            for popt, legend in zip(popts, legends):
+                x = np.linspace(*range_)
+                # center(x)=0
+                y = np.vectorize(optimize_func)(x, popt[0], 0, *popt[2:])
+                # y=1 on x=0
+                y /= np.max(y)
 
-            [amp, center, sigma] = popt[0:3]
-            annote = "{}::amp:{:#.3g},center:{:#.3g},sigma:{:#.3g},HWFM:{:#.3g}".format(
-                legend, amp, center, sigma, sigma * 2.355
-            )
-            ax.annotate(
-                annote,
-                xy=(sigma, 0.3 + 0.3 * sigma),
-                horizontalalignment="left",
-                verticalalignment="baseline",
-            )
-        print("optimized param")
-        for popt, legend in zip(popts, legends):
-            print(f"{legend}:{popt}")
+                # plot fit curve
+                ax.plot(x, y)
 
-        ax.set_title("fit:{}".format(optimize_func.__name__))
+                [amp, center, sigma] = popt[0:3]
+                annote = (
+                    "{}::amp:{:#.3g},center:{:#.3g},sigma:{:#.3g},HWFM:{:#.3g}".format(
+                        legend, amp, center, sigma, sigma * 2.355
+                    )
+                )
+                ax.annotate(
+                    annote,
+                    xy=(sigma, 0.3 + 0.3 * sigma),
+                    horizontalalignment="left",
+                    verticalalignment="baseline",
+                )
+            print("optimized param")
+            for popt, legend in zip(popts, legends):
+                print(f"{legend}:{popt}")
+
+            ax.set_title("fit:{}".format(optimize_func.__name__))
+
+        return ax_func
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
@@ -171,7 +179,7 @@ def fig_ω_scan_1axis(
             visualize.arrange_row_default_conf(
                 range_, xscale="linear", yscale="linear"
             ),
-            ax_func_opt,
+            ax_func_opt(legends),
             ax_func_format,
             ax_func,
         ),

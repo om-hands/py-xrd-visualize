@@ -134,11 +134,10 @@ def fig_ω_scan_1axis(
         # don't show y value
         ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
-    def fig_func_opt(fig: Figure):
+    def ax_func_opt(ax: Axes):
         if not show_optparam:
             return
 
-        ax = fig.axes[0]
         for popt, legend in zip(popts, legends):
             x = np.linspace(*range_)
             # center(x)=0
@@ -163,7 +162,7 @@ def fig_ω_scan_1axis(
         for popt, legend in zip(popts, legends):
             print(f"{legend}:{popt}")
 
-        fig.suptitle("fit:{}".format(optimize_func.__name__))
+        ax.set_title("fit:{}".format(optimize_func.__name__))
 
     fig = visualize.arrange_row_1axis_nxy(
         xys=xys,
@@ -172,13 +171,13 @@ def fig_ω_scan_1axis(
             visualize.arrange_row_default_conf(
                 range_, xscale="linear", yscale="linear"
             ),
+            ax_func_opt,
             ax_func_format,
             ax_func,
         ),
         fig_func=multi_fig_func(
             fig_conf,
             fig_func_label(xlabel, ylabel),
-            fig_func_opt,
             fig_conf_show(),
         ),
     )

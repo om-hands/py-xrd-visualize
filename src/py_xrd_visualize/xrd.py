@@ -144,9 +144,11 @@ def fig_ω_scan_1axis(
         def ax_func(ax: Axes):
             for popt, legend in zip(popts, legends):
                 x = np.linspace(*range_)
-                # center(x)=0
+
+                # plot ideal func (center=0)
                 y = np.vectorize(optimize_func)(x, popt[0], 0, *popt[2:])
-                # y=1 on x=0
+
+                # normalize y to 1 on x=0
                 y /= np.max(y)
 
                 # plot fit curve

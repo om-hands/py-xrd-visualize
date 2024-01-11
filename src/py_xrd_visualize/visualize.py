@@ -97,7 +97,7 @@ def arrange_row_naxis_nxy(
     return fig
 
 
-def arrange_row_default_conf(
+def ax_conf_default(
     range_: tuple[float, float],
     ymax: float | None = None,
     ymin: float | None = None,

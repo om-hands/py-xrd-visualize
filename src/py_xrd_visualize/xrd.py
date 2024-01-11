@@ -14,7 +14,7 @@ from py_xrd_visualize import util
 from py_xrd_visualize.visualize import (
     XY,
     arrange_row_1axis_nxy,
-    arrange_row_default_conf,
+    ax_conf_default,
     ax_conf_pass,
     ax_default_legends,
     axis_conf_func,
@@ -71,7 +71,7 @@ def fig_2θ_ω_1axis(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
-            arrange_row_default_conf(range_, xscale="linear", yscale="log"),
+            ax_conf_default(range_, xscale="linear", yscale="log"),
             ax_func_format,
             ax_func,
         ),
@@ -181,7 +181,7 @@ def fig_ω_scan_1axis(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
-            arrange_row_default_conf(range_, xscale="linear", yscale="linear"),
+            ax_conf_default(range_, xscale="linear", yscale="linear"),
             ax_func_opt(legends),
             ax_func_format,
             ax_func,

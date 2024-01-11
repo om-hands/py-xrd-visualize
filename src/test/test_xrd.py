@@ -1,5 +1,6 @@
 from io import TextIOBase
 from pathlib import Path
+from typing import Sequence
 from matplotlib.axes import Axes
 
 import matplotlib.pyplot as plt
@@ -14,6 +15,7 @@ from py_xrd_visualize.visualize import (
 
 from py_xrd_visualize.xrd import (
     fig_2θ_ω_1axis,
+    fig_φ_scan_1axis,
     fig_ω_scan_1axis,
 )
 
@@ -62,7 +64,7 @@ def plot_ω_scan_1axis():
     fig = fig_ω_scan_1axis(
         paths=paths,
         amps=[1400, 35],
-        legends=["test1", "test2noisy"],
+        # legends=["test1", "test2noisy"],
         range_=(-4, 4),
         # ax_legends=ax_default_legends(["test1", "test2"]),
         # optimize_func=util.gauss(),
@@ -73,6 +75,25 @@ def plot_ω_scan_1axis():
     # fig.savefig()
 
 
+def plot_φ_scan_1axis():
+    paths: list[TextIOBase | str | Path] = list(
+        map(lambda x: Path("src/test/") / x, ["test.xy"] * 2)
+    )
+
+    print(paths)
+
+    fig = fig_φ_scan_1axis(
+        paths=paths,
+        scantimes_sec=[1, 1],
+        # legends=["test1", "test2noisy"],
+        range_=(0, 360),
+        fig_conf=fig_conf_show(),
+    )
+    plt.show()
+    # fig.savefig()
+
+
 if __name__ == "__main__":
     plot_2θ_ω_1axis()
     plot_ω_scan_1axis()
+    plot_φ_scan_1axis()

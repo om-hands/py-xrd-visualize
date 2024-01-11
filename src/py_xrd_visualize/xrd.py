@@ -10,9 +10,11 @@ import numpy as np
 
 from scipy.optimize import curve_fit
 
-from py_xrd_visualize import util, visualize
+from py_xrd_visualize import util
 from py_xrd_visualize.visualize import (
     XY,
+    arrange_row_1axis_nxy,
+    arrange_row_default_conf,
     ax_conf_pass,
     ax_default_legends,
     axis_conf_func,
@@ -65,11 +67,11 @@ def fig_2θ_ω_1axis(
         # don't show y value
         ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
-    fig = visualize.arrange_row_1axis_nxy(
+    fig = arrange_row_1axis_nxy(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
-            visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log"),
+            arrange_row_default_conf(range_, xscale="linear", yscale="log"),
             ax_func_format,
             ax_func,
         ),
@@ -175,13 +177,11 @@ def fig_ω_scan_1axis(
 
         return ax_func
 
-    fig = visualize.arrange_row_1axis_nxy(
+    fig = arrange_row_1axis_nxy(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
-            visualize.arrange_row_default_conf(
-                range_, xscale="linear", yscale="linear"
-            ),
+            arrange_row_default_conf(range_, xscale="linear", yscale="linear"),
             ax_func_opt(legends),
             ax_func_format,
             ax_func,

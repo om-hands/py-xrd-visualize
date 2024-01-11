@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from io import TextIOBase
 from pathlib import Path
+
 from typing import Callable
 
 from matplotlib import ticker
@@ -199,7 +200,7 @@ def fig_ω_scan_1axis(
 def fig_φ_scan_1axis(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
-    range_: tuple[float, float],
+    range_: tuple[float, float] = (0, 360),
     ax_func: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "φ(deg.)",
@@ -207,6 +208,7 @@ def fig_φ_scan_1axis(
     legends: list[str] | None = None,
     legend_title: str = "",
     legend_reverse: bool = False,
+    roll_x_deg: float = 0,
     slide_exp: float = 2,
     slide_base: float = 1.0,
 ) -> Figure:
@@ -218,10 +220,22 @@ def fig_φ_scan_1axis(
     for xy, st in zip(xys, scantimes_sec):
         xy.y /= st
 
+    # **WIP** not work on left != 0
     # slide x axis to 0
     for xy in xys:
         x0 = xy.x[0]
         xy.x -= x0
+
+    # roll x
+    _, right = range_
+    for xy in xys:
+        xy.x = (xy.x + roll_x_deg) % right
+
+    # reorder array
+    for xy in xys:
+        idx = xy.x.argmin()
+        xy.x = np.roll(xy.x, -idx)
+        xy.y = np.roll(xy.y, -idx)
 
     # slide y axis
     util.slide_XYs_log(xys, slide_exp, slide_base)

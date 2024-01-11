@@ -194,3 +194,57 @@ def fig_ω_scan_1axis(
     )
 
     return fig
+
+
+def fig_φ_scan_1axis(
+    paths: list[TextIOBase | str | Path],
+    scantimes_sec: list[float],
+    range_: tuple[float, float],
+    ax_func: axis_conf_func = ax_conf_pass,
+    fig_conf: fig_conf_func = fig_conf_pass,
+    xlabel: str = "φ(deg.)",
+    ylabel: str = "Intensity(arb. unit)",
+    legends: list[str] | None = None,
+    legend_title: str = "",
+    legend_reverse: bool = False,
+    slide_exp: float = 2,
+    slide_base: float = 1.0,
+) -> Figure:
+    xys: list[XY] = []
+    for p in paths:
+        xys.append(util.read_xy(p))
+
+    # y unit: count per sec
+    for xy, st in zip(xys, scantimes_sec):
+        xy.y /= st
+
+    # slide x axis to 0
+    for xy in xys:
+        x0 = xy.x[0]
+        xy.x -= x0
+
+    # slide y axis
+    util.slide_XYs_log(xys, slide_exp, slide_base)
+
+    def ax_func_format(ax: Axes):
+        # y axis: log scale
+        ax.yaxis.set_major_locator(ticker.LogLocator(10))
+        # don't show y value
+        ax.yaxis.set_major_formatter(ticker.NullFormatter())
+
+    fig = arrange_row_1axis_nxy(
+        xys=xys,
+        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
+        ax_func=multi_ax_func(
+            ax_conf_default(range_, xscale="linear", yscale="log"),
+            ax_func_format,
+            ax_func,
+        ),
+        fig_func=multi_fig_func(
+            fig_func_label(xlabel, ylabel),
+            fig_conf_show(),
+            fig_conf,
+        ),
+    )
+
+    return fig

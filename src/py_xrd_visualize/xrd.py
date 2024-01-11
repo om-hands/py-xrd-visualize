@@ -59,7 +59,7 @@ def fig_2θ_ω_1axis(
     # slide after reverse
     util.slide_XYs_log(xys, slide_exp, slide_base)
 
-    def ax_func_xrd(ax: Axes):
+    def ax_func_format(ax: Axes):
         # y axis: log scale
         ax.yaxis.set_major_locator(ticker.LogLocator(10))
         # don't show y value
@@ -70,7 +70,7 @@ def fig_2θ_ω_1axis(
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             visualize.arrange_row_default_conf(range_, xscale="linear", yscale="log"),
-            ax_func_xrd,
+            ax_func_format,
             ax_func,
         ),
         fig_func=multi_fig_func(
@@ -193,3 +193,4 @@ def fig_ω_scan_1axis(
     )
 
     return fig
+

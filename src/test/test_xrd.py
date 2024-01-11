@@ -1,6 +1,6 @@
 from io import TextIOBase
 from pathlib import Path
-from typing import Sequence
+import matplotlib as mpl
 from matplotlib.axes import Axes
 
 import matplotlib.pyplot as plt
@@ -41,7 +41,7 @@ def plot_2θ_ω_1axis():
                 Annotater(38.7, 0, "aaaa"),
             ],
         ),
-        fig_conf=fig_conf_show(),
+        fig_conf=fig_conf_show(figratio=(5, 6)),
     )
     plt.show()
     # fig.savefig()
@@ -86,14 +86,21 @@ def plot_φ_scan_1axis():
         paths=paths,
         scantimes_sec=[1, 1],
         # legends=["test1", "test2noisy"],
-        range_=(0, 360),
+        range_=(0.0, 0.8),
         fig_conf=fig_conf_show(),
+        # roll_x_deg=0.3,
     )
     plt.show()
     # fig.savefig()
 
 
 if __name__ == "__main__":
-    plot_2θ_ω_1axis()
-    plot_ω_scan_1axis()
+    mpl.rcParams.update(
+        {
+            "lines.linewidth": "1.8",
+            "font.size": 18,
+        }
+    )
+    # plot_2θ_ω_1axis()
+    # plot_ω_scan_1axis()
     plot_φ_scan_1axis()

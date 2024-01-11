@@ -75,6 +75,7 @@ def fig_2θ_ω_1axis(
         ),
         fig_func=multi_fig_func(
             fig_func_label(xlabel, ylabel),
+            fig_conf_show(),
             fig_conf,
         ),
     )

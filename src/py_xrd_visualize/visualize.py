@@ -24,15 +24,6 @@ axis_conf_func: TypeAlias = Callable[[Axes], None]
 fig_conf_func: TypeAlias = Callable[[Figure], None]
 
 
-def parameter():
-    mpl.rcParams.update(
-        {
-            "font.family": "sans-serif",
-            "font.sans-serif": "Arial",
-        }
-    )
-
-
 def arrange_row_1axis_nxy(
     xys: list[XY],
     ax_legends: axis_conf_func,

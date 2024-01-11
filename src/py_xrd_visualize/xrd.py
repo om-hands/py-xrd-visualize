@@ -42,7 +42,7 @@ def fig_2θ_ω_1axis(
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
-    legends: list[str] = [],
+    legends: list[str] | None = None,
     legend_title: str = "",
     legend_reverse: bool = False,
     slide_exp: float = 2,
@@ -90,7 +90,7 @@ def fig_ω_scan_1axis(
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "ω(deg.)",
     ylabel: str = "Intensity(arb. unit)",
-    legends: list[str] = [],
+    legends: list[str] | None = None,
     legend_title: str = "",
     legend_reverse: bool = False,
     optimize_func: Callable = util.gauss_const_bg,
@@ -134,11 +134,11 @@ def fig_ω_scan_1axis(
         # don't show y value
         ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
-    def ax_func_opt(legends: list[str]):
+    def ax_func_opt(legends: list[str] | None):
         if not show_optparam:
             return ax_conf_pass
 
-        if len(legends) == 0:
+        if legends is None:
             legends = [f"{i}" for i, _ in enumerate(popts)]
 
         def ax_func(ax: Axes):
@@ -193,4 +193,3 @@ def fig_ω_scan_1axis(
     )
 
     return fig
-

@@ -203,8 +203,11 @@ def fig_conf_pass(fig: Figure):
 
 
 def ax_default_legends(
-    legends: list[str], title: str = "", reverse=False
+    legends: list[str] | None, title: str = "", reverse=False
 ) -> axis_conf_func:
+    if legends is None:
+        return ax_conf_pass
+
     def axis_func(ax: Axes):
         ax.legend(legends, title=title, reverse=reverse)
 

@@ -82,13 +82,31 @@ def plot_φ_scan_1axis():
 
     print(paths)
 
-    fig = fig_φ_scan_1axis(
+    fig_φ_scan_1axis(
         paths=paths,
         scantimes_sec=[1, 1],
-        # legends=["test1", "test2noisy"],
-        range_=(0.0, 0.8),
+        # legends=["1", ""],
+        range_=(0.2, 0.8),
         fig_conf=fig_conf_show(),
-        # roll_x_deg=0.3,
+        roll_x_deg=0.0,
+    )
+    # plt.show()
+
+    fig_φ_scan_1axis(
+        paths=paths,
+        scantimes_sec=[1, 1],
+        # legends=["2", ""],
+        range_=(0.3, 0.8),
+        fig_conf=fig_conf_show(),
+        roll_x_deg=0.304,
+    )
+    fig_φ_scan_1axis(
+        paths=paths,
+        scantimes_sec=[1, 1],
+        # legends=["2", ""],
+        range_=(0.3, 0.8),
+        fig_conf=fig_conf_show(),
+        roll_x_deg=0.311,
     )
     plt.show()
     # fig.savefig()

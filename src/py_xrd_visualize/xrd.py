@@ -220,16 +220,18 @@ def fig_φ_scan_1axis(
     for xy, st in zip(xys, scantimes_sec):
         xy.y /= st
 
-    # **WIP** not work on left != 0
     # slide x axis to 0
     for xy in xys:
-        x0 = xy.x[0]
+        x0 = xy.x.min()
         xy.x -= x0
 
-    # roll x
-    _, right = range_
+    # roll x axis
     for xy in xys:
-        xy.x = (xy.x + roll_x_deg) % right
+        xmax = xy.x.max()
+        # roll_x_deg = [0,xmax)
+        roll_x_deg %= xmax
+        xy.x += roll_x_deg
+        xy.x[xy.x > xmax] -= xmax
 
     # reorder array
     for xy in xys:

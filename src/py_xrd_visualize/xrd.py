@@ -195,9 +195,9 @@ def fig_ω_scan_1axis(
             ax_func,
         ),
         fig_func=multi_fig_func(
-            fig_conf,
             fig_func_label(xlabel, ylabel),
             fig_conf_show(),
+            fig_conf,
         ),
     )
 

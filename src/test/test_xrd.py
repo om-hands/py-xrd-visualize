@@ -1,14 +1,11 @@
 from io import TextIOBase
 from pathlib import Path
 import matplotlib as mpl
-from matplotlib.axes import Axes
 
 import matplotlib.pyplot as plt
-from py_xrd_visualize import util
+
 from py_xrd_visualize.visualize import (
     Annotater,
-    ax_conf_pass,
-    ax_default_legends,
     ax_func_horizontal_annotates,
     fig_conf_show,
 )

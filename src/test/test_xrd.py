@@ -72,6 +72,19 @@ def plot_ω_scan_1axis():
         fig_conf=fig_conf_show(),
     )
     plt.show()
+
+    fig_ω_scan_1axis(
+        paths=paths,
+        amps=[1400, 35],
+        # legends=["test1", "test2noisy"],
+        range_=(-4, 4),
+        # ax_legends=ax_default_legends(["test1", "test2"]),
+        # optimize_func=util.gauss(),
+        show_optparam=False,
+        fig_conf=fig_conf_show(),
+    )
+    plt.show()
+
     # fig.savefig()
 
 
@@ -119,6 +132,6 @@ if __name__ == "__main__":
             "font.size": 18,
         }
     )
-    # plot_2θ_ω_1axis()
-    # plot_ω_scan_1axis()
+    plot_2θ_ω_1axis()
+    plot_ω_scan_1axis()
     plot_φ_scan_1axis()

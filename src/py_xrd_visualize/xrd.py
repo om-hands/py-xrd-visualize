@@ -136,7 +136,7 @@ def fig_ω_scan_1axis(
 
     def ax_func_format(ax: Axes):
         # show range includes amp(=1.0),
-        ax.set_ylim(ymin=0, ymax=2)
+        ax.set_ylim(ymin=0, ymax=1.5)
 
         # y axis: linear scale
         ax.yaxis.set_major_locator(ticker.LinearLocator())

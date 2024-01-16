@@ -37,6 +37,19 @@ class Scaned:
     # paths: list[Union[str, Path]],
 
 
+def ax_format_y_log_arbunits(ax: Axes):
+    # y axis: log scale
+    ax.yaxis.set_major_locator(ticker.LogLocator(10))
+
+    # show minor ticks
+    ax.yaxis.set_minor_locator(
+        ticker.LogLocator(numticks=10, subs=(np.arange(1, 10) * 0.1).tolist())
+    )
+    # don't show y value
+    ax.yaxis.set_major_formatter(ticker.NullFormatter())
+    ax.yaxis.set_minor_formatter(ticker.NullFormatter())
+
+
 def fig_2θ_ω_1axis(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
@@ -62,18 +75,12 @@ def fig_2θ_ω_1axis(
     # slide after reverse
     util.slide_XYs_log(xys, slide_exp, slide_base)
 
-    def ax_func_format(ax: Axes):
-        # y axis: log scale
-        ax.yaxis.set_major_locator(ticker.LogLocator(10))
-        # don't show y value
-        ax.yaxis.set_major_formatter(ticker.NullFormatter())
-
     fig = arrange_row_1axis_nxy(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             ax_conf_default(range_, xscale="linear", yscale="log"),
-            ax_func_format,
+            ax_format_y_log_arbunits,
             ax_func,
         ),
         fig_func=multi_fig_func(
@@ -242,18 +249,12 @@ def fig_φ_scan_1axis(
     # slide y axis
     util.slide_XYs_log(xys, slide_exp, slide_base)
 
-    def ax_func_format(ax: Axes):
-        # y axis: log scale
-        ax.yaxis.set_major_locator(ticker.LogLocator(10))
-        # don't show y value
-        ax.yaxis.set_major_formatter(ticker.NullFormatter())
-
     fig = arrange_row_1axis_nxy(
         xys=xys,
         ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             ax_conf_default(range_, xscale="linear", yscale="log"),
-            ax_func_format,
+            ax_format_y_log_arbunits,
             ax_func,
         ),
         fig_func=multi_fig_func(

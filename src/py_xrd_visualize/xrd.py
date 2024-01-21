@@ -59,6 +59,14 @@ def ax_format_y_log_arbunits(ax: Axes):
     ax.yaxis.set_minor_formatter(ticker.NullFormatter())
 
 
+def xys_2θ_ω_scan(
+    xys: list[XY], scantimes_sec: list[float], slide_exp: float, slide_base: float
+):
+    normalize_y_cps(xys, scantimes_sec)
+
+    slide_y_log(xys, slide_exp, slide_base)
+
+
 def fig_2θ_ω_1axis(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
@@ -74,10 +82,7 @@ def fig_2θ_ω_1axis(
     slide_base: float = 1.0,
 ) -> Figure:
     xys = read_xys(paths)
-
-    normalize_y_cps(xys, scantimes_sec)
-
-    slide_y_log(xys, slide_exp, slide_base)
+    xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
@@ -97,22 +102,9 @@ def fig_2θ_ω_1axis(
     return fig
 
 
-def fig_ω_scan_1axis(
-    paths: list[TextIOBase | str | Path],
-    amps: list[float],
-    range_: tuple[float, float],
-    ax_func: axis_conf_func = ax_conf_pass,
-    fig_conf: fig_conf_func = fig_conf_pass,
-    xlabel: str = "ω(deg.)",
-    ylabel: str = "Intensity(arb. unit)",
-    legends: list[str] | None = None,
-    legend_title: str = "",
-    legend_reverse: bool = False,
-    optimize_func: Callable = util.gauss_const_bg,
-    show_optparam: bool = False,
-) -> Figure:
-    xys = read_xys(paths)
-
+def xys_ω_scan(
+    xys: list[XY], amps: list[float], optimize_func: Callable
+) -> list[np.ndarray]:
     shift_x_center_rough(xys)
 
     # fitting
@@ -132,6 +124,26 @@ def fig_ω_scan_1axis(
         xy.y /= optimize_func(center, *popt)
 
         popts.append(popt)
+    return popts
+
+
+def fig_ω_scan_1axis(
+    paths: list[TextIOBase | str | Path],
+    amps: list[float],
+    range_: tuple[float, float],
+    ax_func: axis_conf_func = ax_conf_pass,
+    fig_conf: fig_conf_func = fig_conf_pass,
+    xlabel: str = "ω(deg.)",
+    ylabel: str = "Intensity(arb. unit)",
+    legends: list[str] | None = None,
+    legend_title: str = "",
+    legend_reverse: bool = False,
+    optimize_func: Callable = util.gauss_const_bg,
+    show_optparam: bool = False,
+) -> Figure:
+    xys = read_xys(paths)
+
+    popts = xys_ω_scan(xys, amps, optimize_func)
 
     def ax_func_format(ax: Axes):
         # show range includes amp(=1.0),
@@ -203,6 +215,24 @@ def fig_ω_scan_1axis(
     return fig
 
 
+def xys_φ_scan(
+    xys: list[XY],
+    scantimes_sec: list[float],
+    roll_x_deg: float,
+    slide_exp: float,
+    slide_base: float,
+):
+    normalize_y_cps(xys, scantimes_sec)
+
+    shift_x0(xys)
+
+    roll_x(xys, roll_x_deg)
+
+    reorder_x(xys)
+
+    slide_y_log(xys, slide_exp, slide_base)
+
+
 def fig_φ_scan_1axis(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
@@ -220,15 +250,7 @@ def fig_φ_scan_1axis(
 ) -> Figure:
     xys = read_xys(paths)
 
-    normalize_y_cps(xys, scantimes_sec)
-
-    shift_x0(xys)
-
-    roll_x(xys, roll_x_deg)
-
-    reorder_x(xys)
-
-    slide_y_log(xys, slide_exp, slide_base)
+    xys_φ_scan(xys, scantimes_sec, roll_x_deg, slide_exp, slide_base)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,

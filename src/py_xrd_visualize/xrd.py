@@ -8,12 +8,21 @@ from matplotlib import ticker
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import numpy as np
+from py_xrd_visualize.XYs import (
+    XY,
+    normalize_y_cps,
+    read_xys,
+    reorder_x,
+    roll_x,
+    shift_x_center_rough,
+    shift_x0,
+    slide_y_log,
+)
 
 from scipy.optimize import curve_fit
 
 from py_xrd_visualize import util
 from py_xrd_visualize.visualize import (
-    XY,
     arrange_row_1axis_nxy,
     ax_conf_default,
     ax_conf_pass,
@@ -64,16 +73,11 @@ def fig_2θ_ω_1axis(
     slide_exp: float = 2,
     slide_base: float = 1.0,
 ) -> Figure:
-    xys: list[XY] = []
-    for p in paths:
-        xys.append(util.read_xy(p))
+    xys = read_xys(paths)
 
-    # y unit: count per sec
-    for xy, st in zip(xys, scantimes_sec):
-        xy.y /= st
+    normalize_y_cps(xys, scantimes_sec)
 
-    # slide after reverse
-    util.slide_XYs_log(xys, slide_exp, slide_base)
+    slide_y_log(xys, slide_exp, slide_base)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
@@ -107,14 +111,9 @@ def fig_ω_scan_1axis(
     optimize_func: Callable = util.gauss_const_bg,
     show_optparam: bool = False,
 ) -> Figure:
-    xys: list[XY] = []
-    for p in paths:
-        xys.append(util.read_xy(p))
+    xys = read_xys(paths)
 
-    # shift x-axis to center roughly
-    for xy in xys:
-        x = xy.x
-        x -= (x[0] + x[-1]) / 2.0
+    shift_x_center_rough(xys)
 
     # fitting
     p0s = []
@@ -219,35 +218,17 @@ def fig_φ_scan_1axis(
     slide_exp: float = 2,
     slide_base: float = 1.0,
 ) -> Figure:
-    xys: list[XY] = []
-    for p in paths:
-        xys.append(util.read_xy(p))
+    xys = read_xys(paths)
 
-    # y unit: count per sec
-    for xy, st in zip(xys, scantimes_sec):
-        xy.y /= st
+    normalize_y_cps(xys, scantimes_sec)
 
-    # slide x axis to 0
-    for xy in xys:
-        x0 = xy.x.min()
-        xy.x -= x0
+    shift_x0(xys)
 
-    # roll x axis
-    for xy in xys:
-        xmax = xy.x.max()
-        # roll_x_deg = [0,xmax)
-        roll_x_deg %= xmax
-        xy.x += roll_x_deg
-        xy.x[xy.x > xmax] -= xmax
+    roll_x(xys, roll_x_deg)
 
-    # reorder array
-    for xy in xys:
-        idx = xy.x.argmin()
-        xy.x = np.roll(xy.x, -idx)
-        xy.y = np.roll(xy.y, -idx)
+    reorder_x(xys)
 
-    # slide y axis
-    util.slide_XYs_log(xys, slide_exp, slide_base)
+    slide_y_log(xys, slide_exp, slide_base)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import numpy as np
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -9,15 +8,7 @@ from matplotlib.axes import Axes
 
 # import Types
 from typing import Callable, Literal, Tuple, TypeAlias
-
-
-@dataclass()
-class XY:
-    x: np.ndarray
-    y: np.ndarray
-
-    def to_tuple(self) -> tuple[np.ndarray, np.ndarray]:
-        return (self.x, self.y)
+from py_xrd_visualize.XYs import XY
 
 
 axis_conf_func: TypeAlias = Callable[[Axes], None]

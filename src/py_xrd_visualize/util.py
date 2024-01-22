@@ -36,6 +36,18 @@ class Optimizer(ABC):
     def center(popt: Sequence[float]) -> float:
         pass
 
+    @staticmethod
+    @abstractmethod
+    def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:
+        pass
+
+    def width2str(self, popt: Sequence[float], sig_digs: int = 3) -> str:
+        FWHM = self.hwhm(popt)
+        return f"{FWHM=:#.{sig_digs}g}"
+
+    def toString(self, popt: Sequence[float], sig_digs: int = 3) -> str:
+        return f"{self.param2str(popt, sig_digs)},{self.width2str(popt, sig_digs)}"
+
     def fitting(self, xy: XY, pinit: Sequence[float]) -> tuple[float, float]:
         popt, pcov = curve_fit(self.func, xdata=xy.x, ydata=xy.y, p0=pinit)
         return popt, pcov
@@ -65,6 +77,15 @@ class Gauss(Optimizer):
     @staticmethod
     def center(popt: Sequence[float]) -> float:
         return popt[1]
+
+    @staticmethod
+    def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:
+        amp = popt[0]
+        center = popt[1]
+        sigma = popt[2]
+        return (
+            f"gauss,{amp=:#.{sig_digs}g},{center=:#.{sig_digs}g},{sigma=:#.{sig_digs}g}"
+        )
 
 
 class Voigt(Optimizer):
@@ -102,3 +123,12 @@ class Voigt(Optimizer):
     @staticmethod
     def center(popt: Sequence[float]) -> float:
         return popt[1]
+
+    @staticmethod
+    def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:
+        amp = popt[0]
+        center = popt[1]
+        lw = popt[2]
+        gw = popt[3]
+
+        return f"voigt,{amp=:#.{sig_digs}g},{center=:#.{sig_digs}g},{lw=:#.{sig_digs}g},{gw=:#.{sig_digs}g}"

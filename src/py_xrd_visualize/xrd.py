@@ -177,14 +177,10 @@ def fig_ω_scan_1axis(
                 # plot fit curve
                 ax.plot(x, y)
 
-                [amp, center, sigma] = popt[0:3]
-                annote = (
-                    "{}::amp:{:#.3g},center:{:#.3g},sigma:{:#.3g},HWFM:{:#.3g}".format(
-                        legend, amp, center, sigma, sigma * 2.355
-                    )
-                )
+                ann_text = f"{legend}:{optimizer.toString(popt)}"
+                sigma = popt[2]
                 ax.annotate(
-                    annote,
+                    ann_text,
                     xy=(sigma, 0.3 + 0.3 * sigma),
                     horizontalalignment="left",
                     verticalalignment="baseline",

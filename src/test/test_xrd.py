@@ -3,6 +3,7 @@ from pathlib import Path
 import matplotlib as mpl
 
 import matplotlib.pyplot as plt
+from py_xrd_visualize.util import Gauss, Voigt
 
 from py_xrd_visualize.visualize import (
     Annotater,
@@ -64,9 +65,19 @@ def plot_ω_scan_1axis():
         # legends=["test1", "test2noisy"],
         range_=(-4, 4),
         # ax_legends=ax_default_legends(["test1", "test2"]),
-        # optimize_func=util.gauss(),
+        optimizer=Gauss(),
+        fig_conf=fig_conf_show(figratio=(10, 5)),
         show_optparam=True,
-        fig_conf=fig_conf_show(),
+    )
+    fig_ω_scan_1axis(
+        paths=paths,
+        amps=[1400, 35],
+        # legends=["test1", "test2noisy"],
+        range_=(-4, 4),
+        # ax_legends=ax_default_legends(["test1", "test2"]),
+        optimizer=Voigt(),
+        fig_conf=fig_conf_show(figratio=(10, 5)),
+        show_optparam=True,
     )
     plt.show()
 
@@ -78,7 +89,6 @@ def plot_ω_scan_1axis():
         # ax_legends=ax_default_legends(["test1", "test2"]),
         # optimize_func=util.gauss(),
         show_optparam=False,
-        fig_conf=fig_conf_show(),
     )
     plt.show()
 

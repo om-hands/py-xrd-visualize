@@ -169,19 +169,23 @@ def fig_ω_scan_1axis(
                 x = np.linspace(*range_)
 
                 # plot ideal func (center=0)
-                y = np.vectorize(optimizer.func)(x, popt[0], 0, *popt[2:])
+                popt_center = [popt[0], 0, *popt[2:]]
+                y = np.vectorize(optimizer.func)(x, *popt_center)
 
                 # normalize y to 1 on x=0
-                y /= np.max(y)
+                ymax = np.max(y)
+                y /= ymax
 
                 # plot fit curve
                 ax.plot(x, y)
 
                 ann_text = f"{legend}:{optimizer.toString(popt)}"
-                sigma = popt[2]
+                hwhm = optimizer.fwhm(popt) / 2
+                # 1.8 is arbitrary
+                xy = (hwhm, optimizer.func(hwhm, *popt_center) / ymax * 1.8)
                 ax.annotate(
                     ann_text,
-                    xy=(sigma, 0.3 + 0.3 * sigma),
+                    xy=xy,
                     horizontalalignment="left",
                     verticalalignment="baseline",
                 )

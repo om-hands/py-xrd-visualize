@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from typing import Sequence
 import numpy as np
 from py_xrd_visualize.XYs import XY
@@ -9,10 +10,11 @@ from scipy.optimize import curve_fit
 class Optimizer(ABC):
     """
     Fitting class
-    description:
-        reserve optimized parameters and initial parameters.
-        common for amp,center
-        each subclass implement each initial parameters,`fitfunc` and `hwhm` method.
+
+    description
+    ------------
+    generate initial parameters and reserve optimization parameters order.
+    each subclass implement `initparam` , `func` , `fwhm` , `center` and `param2str`.
     """
 
     @staticmethod
@@ -23,12 +25,12 @@ class Optimizer(ABC):
     @staticmethod
     @abstractmethod
     def func(x, amp, center, widthlike, *args) -> float:
-        """return fitting function"""
+        """fitting function"""
         pass
 
     @staticmethod
     @abstractmethod
-    def hwhm(popt: Sequence[float]) -> float:
+    def fwhm(popt: Sequence[float]) -> float:
         pass
 
     @staticmethod
@@ -42,7 +44,7 @@ class Optimizer(ABC):
         pass
 
     def width2str(self, popt: Sequence[float], sig_digs: int = 3) -> str:
-        FWHM = self.hwhm(popt)
+        FWHM = self.fwhm(popt)
         return f"{FWHM=:#.{sig_digs}g}"
 
     def toString(self, popt: Sequence[float], sig_digs: int = 3) -> str:
@@ -70,7 +72,7 @@ class Gauss(Optimizer):
         return amp * np.exp(-((x - center) ** 2) / (2 * sigma**2)) + bg_c
 
     @staticmethod
-    def hwhm(popt: Sequence[float]) -> float:
+    def fwhm(popt: Sequence[float]) -> float:
         sigma = popt[2]
         return sigma * 2.355
 
@@ -113,8 +115,8 @@ class Voigt(Optimizer):
         return y
 
     @staticmethod
-    def hwhm(popt: Sequence[float]) -> float:
-        _, _, lw, gw = popt
+    def fwhm(popt: Sequence[float]) -> float:
+        _, _, lw, gw, _ = popt
         """https://en.wikipedia.org/wiki/Voigt_profile"""
         fl = 2 * lw
         fg = 2.354820 * gw

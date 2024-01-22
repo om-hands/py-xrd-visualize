@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from io import TextIOBase
 from pathlib import Path
 
-from typing import Callable
-
 from matplotlib import ticker
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -19,9 +17,11 @@ from py_xrd_visualize.XYs import (
     slide_y_log,
 )
 
-from scipy.optimize import curve_fit
 
-from py_xrd_visualize import util
+from py_xrd_visualize.util import (
+    Optimizer,
+    Gauss,
+)
 from py_xrd_visualize.visualize import (
     arrange_row_1axis_nxy,
     ax_conf_default,
@@ -103,27 +103,27 @@ def fig_2θ_ω_1axis(
 
 
 def xys_ω_scan(
-    xys: list[XY], amps: list[float], optimize_func: Callable
-) -> list[np.ndarray]:
+    xys: list[XY], amps: list[float], optimizers: list[Optimizer]
+) -> list[list[float]]:
     shift_x_center_rough(xys)
 
+    pinits = []
+    # init param ; center is ~0 by shift_x_center_rough
+    for optimizer, amp in zip(optimizers, amps):
+        pinits.append(optimizer.initparam(amp, 0, 1))
+
     # fitting
-    p0s = []
-    if optimize_func == util.gauss:
-        for amp in amps:
-            p0s.append([amp, 0, 1])
-    elif optimize_func == util.gauss_const_bg:
-        for amp in amps:
-            p0s.append([amp, 0, 1, 1])
     popts = []
-    for xy, p0 in zip(xys, p0s):
-        popt, _ = curve_fit(optimize_func, xdata=xy.x, ydata=xy.y, p0=p0)
-        [amp, center, sigma] = popt[0:3]
-
-        xy.x -= center
-        xy.y /= optimize_func(center, *popt)
-
+    for xy, optimizer, pinit in zip(xys, optimizers, pinits):
+        popt, _ = optimizer.fitting(xy, pinit)
         popts.append(popt)
+
+    # centering and normalize
+    for xy, optimizer, popt in zip(xys, optimizers, popts):
+        center = optimizer.center(popt)
+        xy.x -= center
+        xy.y /= optimizer.func(center, *popt)
+
     return popts
 
 
@@ -138,12 +138,13 @@ def fig_ω_scan_1axis(
     legends: list[str] | None = None,
     legend_title: str = "",
     legend_reverse: bool = False,
-    optimize_func: Callable = util.gauss_const_bg,
+    optimizer: Optimizer = Gauss(),
     show_optparam: bool = False,
 ) -> Figure:
     xys = read_xys(paths)
 
-    popts = xys_ω_scan(xys, amps, optimize_func)
+    optimizers = [(optimizer) for _ in amps]
+    popts = xys_ω_scan(xys, amps, optimizers)
 
     def ax_func_format(ax: Axes):
         # show range includes amp(=1.0),
@@ -164,11 +165,11 @@ def fig_ω_scan_1axis(
             legends = [f"{i}" for i, _ in enumerate(popts)]
 
         def ax_func(ax: Axes):
-            for popt, legend in zip(popts, legends):
+            for popt, legend, optimizer in zip(popts, legends, optimizers):
                 x = np.linspace(*range_)
 
                 # plot ideal func (center=0)
-                y = np.vectorize(optimize_func)(x, popt[0], 0, *popt[2:])
+                y = np.vectorize(optimizer.func)(x, popt[0], 0, *popt[2:])
 
                 # normalize y to 1 on x=0
                 y /= np.max(y)
@@ -192,7 +193,7 @@ def fig_ω_scan_1axis(
             for popt, legend in zip(popts, legends):
                 print(f"{legend}:{popt}")
 
-            ax.set_title("fit:{}".format(optimize_func.__name__))
+            ax.set_title("fit:{}".format(optimizers[0].__class__))
 
         return ax_func
 

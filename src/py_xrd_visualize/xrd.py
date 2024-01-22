@@ -164,10 +164,14 @@ def fig_ω_scan_1axis(
         if legends is None:
             legends = [f"{i}" for i, _ in enumerate(popts)]
 
+        ann_texts = []
+
         def ax_func(ax: Axes):
             for popt, legend, optimizer in zip(popts, legends, optimizers):
-                x = np.linspace(*range_)
+                ann_text = f"{legend}:{optimizer.toString(popt)}"
+                ann_texts.append(ann_text)
 
+                x = np.linspace(*range_)
                 # plot ideal func (center=0)
                 popt_center = [popt[0], 0, *popt[2:]]
                 y = np.vectorize(optimizer.func)(x, *popt_center)
@@ -179,7 +183,6 @@ def fig_ω_scan_1axis(
                 # plot fit curve
                 ax.plot(x, y)
 
-                ann_text = f"{legend}:{optimizer.toString(popt)}"
                 hwhm = optimizer.fwhm(popt) / 2
                 # 1.8 is arbitrary
                 xy = (hwhm, optimizer.func(hwhm, *popt_center) / ymax * 1.8)
@@ -190,10 +193,8 @@ def fig_ω_scan_1axis(
                     verticalalignment="baseline",
                 )
             print("optimized param")
-            for popt, legend in zip(popts, legends):
-                print(f"{legend}:{popt}")
-
-            ax.set_title("fit:{}".format(optimizers[0].__class__))
+            for ann_text in ann_texts:
+                print(ann_text)
 
         return ax_func
 

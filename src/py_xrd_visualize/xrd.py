@@ -63,7 +63,6 @@ def xys_2θ_ω_scan(
     xys: list[XY], scantimes_sec: list[float], slide_exp: float, slide_base: float
 ):
     normalize_y_cps(xys, scantimes_sec)
-
     slide_y_log(xys, slide_exp, slide_base)
 
 
@@ -225,13 +224,9 @@ def xys_φ_scan(
     slide_base: float,
 ):
     normalize_y_cps(xys, scantimes_sec)
-
     shift_x0(xys)
-
     roll_x(xys, roll_x_deg)
-
     reorder_x(xys)
-
     slide_y_log(xys, slide_exp, slide_base)
 
 

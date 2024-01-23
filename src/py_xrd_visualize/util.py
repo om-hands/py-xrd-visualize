@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import math
 
 from typing import Sequence
 import numpy as np
@@ -74,9 +75,7 @@ class Gauss(Optimizer):
     @staticmethod
     def fwhm(popt: Sequence[float]) -> float:
         sigma = popt[2]
-        return sigma * 2.355
-
-
+        return 2 * math.sqrt(2 * math.log(2)) * sigma
 
     @staticmethod
     def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:
@@ -117,10 +116,8 @@ class Voigt(Optimizer):
         _, _, lw, gw, _ = popt
         """https://en.wikipedia.org/wiki/Voigt_profile"""
         fl = 2 * lw
-        fg = 2.354820 * gw
+        fg = 2 * math.sqrt(2 * math.log(2)) * gw
         return 0.5346 * fl + np.sqrt(0.2166 * fl**2 + fg**2)
-
-
 
     @staticmethod
     def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:

@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from io import TextIOBase
+
 from pathlib import Path
 
-from matplotlib import ticker
+from matplotlib import pyplot as plt, ticker
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import numpy as np
@@ -23,7 +24,9 @@ from py_xrd_visualize.util import (
     Gauss,
 )
 from py_xrd_visualize.visualize import (
+    Annotater,
     arrange_row_1axis_nxy,
+    arrange_row_naxis_nxy,
     ax_conf_default,
     ax_conf_pass,
     ax_default_legends,
@@ -264,4 +267,42 @@ def fig_φ_scan_1axis(
         ),
     )
 
+    return fig
+
+
+def fig_any_scan_1axis(
+    paths: list[TextIOBase | str | Path],
+) -> Figure:
+    xys = read_xys(paths)
+
+    def ax_func(ax: Axes):
+        for xy, path in zip(xys, paths):
+            ax.annotate(
+                str(path),
+                (xy.x[0], xy.y[0]),
+            )
+
+    return arrange_row_1axis_nxy(
+        xys=xys,
+        ax_legends=ax_conf_pass,
+        # ax_default_legends([str(path) for path in paths]),
+        fig_func=fig_conf_show(),
+        ax_func=ax_func,
+    )
+
+
+def fig_any_scan_naxis(
+    paths: list[TextIOBase | str | Path],
+) -> Figure:
+    xys = read_xys(paths)
+
+    # sharex = False
+    fig, _ = plt.subplots(nrows=len(xys), sharex=False, squeeze=False)
+    axs = fig.axes
+
+    for ax, xy in zip(axs, xys):
+        ax.plot(*xy.to_tuple())
+
+    fig.legend([str(path) for path in paths])
+    fig_conf_show()(fig)
     return fig

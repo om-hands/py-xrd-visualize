@@ -13,6 +13,8 @@ from py_xrd_visualize.visualize import (
 
 from py_xrd_visualize.xrd import (
     fig_2θ_ω_1axis,
+    fig_any_scan_1axis,
+    fig_any_scan_naxis,
     fig_φ_scan_1axis,
     fig_ω_scan_1axis,
 )
@@ -132,6 +134,24 @@ def plot_φ_scan_1axis():
     # fig.savefig()
 
 
+def plot_any_scan_1axis():
+    paths: list[TextIOBase | str | Path] = list(
+        map(
+            lambda x: Path("src/test/") / x,
+            [
+                "test.xy",
+                "test_rock_13-19_0.01deg.xy",
+                "test_rock_13.5-20.5_0.01deg.xy",
+                "test_rock_14.5-16.5_0.01deg.xy",
+            ],
+        )
+    )
+    with mpl.rc_context({"font.size": 10}):
+        fig_any_scan_1axis(paths)
+        fig_any_scan_naxis(paths)
+        plt.show()
+
+
 if __name__ == "__main__":
     mpl.rcParams.update(
         {
@@ -142,3 +162,4 @@ if __name__ == "__main__":
     plot_2θ_ω_1axis()
     plot_ω_scan_1axis()
     plot_φ_scan_1axis()
+    plot_any_scan_1axis()

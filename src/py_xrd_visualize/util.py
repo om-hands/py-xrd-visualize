@@ -14,6 +14,7 @@ class Optimizer(ABC):
     description
     ------------
     generate initial parameters and reserve optimization parameters order.
+    optimize fitting parameters order is always `amp`, `center`, `width`.
     each subclass implement `initparam` , `func` , `fwhm` , `center` and `param2str`.
     """
 
@@ -34,9 +35,8 @@ class Optimizer(ABC):
         pass
 
     @staticmethod
-    @abstractmethod
     def center(popt: Sequence[float]) -> float:
-        pass
+        return popt[1]
 
     @staticmethod
     @abstractmethod
@@ -76,9 +76,7 @@ class Gauss(Optimizer):
         sigma = popt[2]
         return sigma * 2.355
 
-    @staticmethod
-    def center(popt: Sequence[float]) -> float:
-        return popt[1]
+
 
     @staticmethod
     def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:
@@ -122,9 +120,7 @@ class Voigt(Optimizer):
         fg = 2.354820 * gw
         return 0.5346 * fl + np.sqrt(0.2166 * fl**2 + fg**2)
 
-    @staticmethod
-    def center(popt: Sequence[float]) -> float:
-        return popt[1]
+
 
     @staticmethod
     def param2str(popt: Sequence[float], sig_digs: int = 3) -> str:

@@ -24,12 +24,10 @@ from py_xrd_visualize.util import (
     Gauss,
 )
 from py_xrd_visualize.visualize import (
-    Annotater,
     arrange_row_1axis_nxy,
-    arrange_row_naxis_nxy,
     ax_conf_default,
     ax_conf_pass,
-    ax_default_legends,
+    ax_legends,
     axis_conf_func,
     fig_conf_func,
     fig_conf_pass,
@@ -88,7 +86,7 @@ def fig_2θ_ω_1axis(
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
-        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
+        ax_legends=ax_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             ax_conf_default(range_, xscale="linear", yscale="log"),
             ax_format_y_log_arbunits,
@@ -202,7 +200,7 @@ def fig_ω_scan_1axis(
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
-        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
+        ax_legends=ax_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             ax_conf_default(range_, xscale="linear", yscale="linear"),
             ax_func_opt(legends),
@@ -254,7 +252,7 @@ def fig_φ_scan_1axis(
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
-        ax_legends=ax_default_legends(legends, legend_title, legend_reverse),
+        ax_legends=ax_legends(legends, legend_title, legend_reverse),
         ax_func=multi_ax_func(
             ax_conf_default(range_, xscale="linear", yscale="log"),
             ax_format_y_log_arbunits,

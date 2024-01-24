@@ -184,7 +184,7 @@ def fig_conf_pass(fig: Figure):
     pass
 
 
-def ax_default_legends(
+def ax_legends(
     legends: list[str] | None, title: str = "", reverse=False
 ) -> axis_conf_func:
     if legends is None:

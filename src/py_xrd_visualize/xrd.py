@@ -7,6 +7,8 @@ from matplotlib import pyplot as plt, ticker
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import numpy as np
+from scipy.optimize import curve_fit
+
 from py_xrd_visualize.XYs import (
     XY,
     normalize_y_cps,
@@ -115,7 +117,7 @@ def xys_ω_scan(
     # fitting
     popts = []
     for xy, optimizer, pinit in zip(xys, optimizers, pinits):
-        popt, _ = optimizer.fitting(xy, pinit)
+        popt, _ = curve_fit(optimizer.func, xdata=xy.x, ydata=xy.y, p0=pinit)
         popts.append(popt)
 
     # centering and normalize

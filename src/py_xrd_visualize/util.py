@@ -3,9 +3,8 @@ import math
 
 from typing import Sequence
 import numpy as np
-from py_xrd_visualize.XYs import XY
+
 import scipy
-from scipy.optimize import curve_fit
 
 
 class Optimizer(ABC):
@@ -50,10 +49,6 @@ class Optimizer(ABC):
 
     def toString(self, popt: Sequence[float], sig_digs: int = 3) -> str:
         return f"{self.param2str(popt, sig_digs)},{self.width2str(popt, sig_digs)}"
-
-    def fitting(self, xy: XY, pinit: Sequence[float]) -> tuple[float, float]:
-        popt, pcov = curve_fit(self.func, xdata=xy.x, ydata=xy.y, p0=pinit)
-        return popt, pcov
 
 
 class Gauss(Optimizer):

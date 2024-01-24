@@ -34,10 +34,9 @@ def arrange_row_1axis_nxy(
     for xy in xys:
         ax.plot(*xy.to_tuple())
 
-    # set legends in one ax just after plot
+    # set legends just after plot and before set somethings(like ax.annotate)
+    # legend show annotation when ax.annotate is called before ax.legend
     ax_legends(ax)
-
-    # set somethings after set legend
     ax_func(ax)
 
     fig_func(fig)
@@ -67,9 +66,9 @@ def arrange_row_naxis_nxy(
     for ax, xy in zip(axs, xys):
         ax.plot(*xy.to_tuple())
 
-    # set legends
+    # set legends just after plot and before set somethings(like ax.annotate)
+    # legend show annotation when ax.annotate is called before ax.legend
     fig.legend(legends)
-
     for ax in axs:
         ax_func(ax)
 

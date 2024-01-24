@@ -59,7 +59,7 @@ class Gauss(Optimizer):
         return [amp, center, sigma, bg_c]
 
     @staticmethod
-    def func(x, amp, center, sigma, bg_c) -> float:
+    def func(x, amp, center, sigma, bg_c) -> float:  # type: ignore
         """
         parameter order:
             [amp, center, sigma]
@@ -91,7 +91,7 @@ class Voigt(Optimizer):
         return [amp, center, lw, gw, bg_c]
 
     @staticmethod
-    def func(x, amp, center, lw, gw, bg_c) -> float:
+    def func(x, amp, center, lw, gw, bg_c) -> float:  # type: ignore
         """
         https://qiita.com/yamadasuzaku/items/4fccdc90fa13746af1e1
         Parameters:

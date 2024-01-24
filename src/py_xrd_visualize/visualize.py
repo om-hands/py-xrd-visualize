@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-import matplotlib as mpl
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.figure import Figure
@@ -104,16 +104,11 @@ def ax_conf_default(
     """
 
     def lambda_(ax: Axes):
-        # ax.plot(*xy.to_tuple(), label=leg)
-        # ax.legend()
-        # ax.plot(*xy.to_tuple())
-        # ax.legend(leg)
-
         # scale
         ax.set_xscale(xscale)
         ax.set_yscale(yscale)
 
-        # x-limit
+        # x limit
         ax.set_xlim(range_)
 
         # y limit
@@ -123,14 +118,9 @@ def ax_conf_default(
         if ymax is not None:
             ax.set_ylim(ymax=ymax)
 
-        # メモリ自動調整
+        # x tick setting
         ax.xaxis.set_major_locator(major_locator)
-
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
-
-        # ticklabel
-        # ax.set_xticklabels(np.arange(range[0],range[1]+tick,step=tick))
-        # ax.set_yticklabels([])
 
     return lambda_
 

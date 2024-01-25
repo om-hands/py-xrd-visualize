@@ -149,7 +149,40 @@ def plot_any_scan_1axis():
     with mpl.rc_context({"font.size": 10}):
         fig_any_scan_1axis(paths)
         fig_any_scan_naxis(paths)
-        plt.show()
+def complete_test():
+    paths: list[TextIOBase | str | Path] = list(
+        map(lambda x: Path("src/test/") / x, ["test.xy"] * 2)
+    )
+
+    xys = read_xys(paths)
+    # xys_2θ_ω_scan(xys, scantimes_sec=[1, 1], slide_exp=2, slide_base=1.0)
+    xy1, xy2 = xys
+    fig = plt.figure()
+    fig.add_subplot(211)
+    fig.add_subplot(212)
+
+    cfig = complete_fig(
+        ax_funcs=[
+            complete_ax(
+                ax_plots=ax_plots([xy1]),
+                ax_legends=ax_legends(legends=["test1"]),
+            ),
+            complete_ax(
+                ax_plots=ax_plots([xy2]),
+                ax_legends=ax_legends(legends=["test2"]),
+            ),
+        ],
+        fig_func=[fig_conf_show(figratio=(5, 6))],
+    )
+    cfig(fig)
+    plt.show()
+
+    fig = plt.figure()
+    fig.add_subplot(211)
+    fig.add_subplot(212)
+
+    cfig(fig)
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -159,7 +192,4 @@ if __name__ == "__main__":
             "font.size": 18,
         }
     )
-    plot_2θ_ω_1axis()
-    plot_ω_scan_1axis()
-    plot_φ_scan_1axis()
-    plot_any_scan_1axis()
+    complete_test()

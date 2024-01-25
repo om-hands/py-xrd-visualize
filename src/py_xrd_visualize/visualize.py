@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
 # import Types
-from typing import Callable, Literal, Tuple, TypeAlias
+from typing import Callable, Literal, Sequence, Tuple, TypeAlias
 from py_xrd_visualize.XYs import XY
 
 
@@ -214,3 +214,53 @@ def ax_func_horizontal_annotates(
             )
 
     return ax_func
+
+
+def ax_plots(xys: list[XY]) -> axis_conf_func:
+    def ax_func(ax: Axes) -> None:
+        for xy in xys:
+            ax.plot(*xy.to_tuple())
+
+    return ax_func
+
+
+def complete_ax(
+    ax_plots: axis_conf_func,
+    ax_legends: axis_conf_func,
+    ax_funcs: Sequence[axis_conf_func] | None = None,
+) -> axis_conf_func:
+    """
+    plot xys and set ax configuration.
+    manage ax_conf_func order.
+    """
+
+    def ax_func(ax: Axes) -> None:
+        ax_plots(ax)
+        # set legends just after plot and before set somethings(like ax.annotate)
+        # legend show annotation when ax.annotate is called before ax.legend
+        ax_legends(ax)
+        if ax_funcs is None:
+            return
+
+        for f in ax_funcs:
+            f(ax)
+
+    return ax_func
+
+
+def complete_fig(
+    ax_funcs: Sequence[axis_conf_func],
+    fig_func: Sequence[fig_conf_func] | None = None,
+):
+    def fig_conf(fig: Figure) -> None:
+        axs = fig.axes
+        for ax, f in zip(axs, ax_funcs):
+            f(ax)
+
+        if fig_func is None:
+            return
+
+        for f in fig_func:
+            f(fig)
+
+    return fig_conf

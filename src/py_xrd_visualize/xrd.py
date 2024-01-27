@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from io import TextIOBase
 
 from pathlib import Path
@@ -42,15 +41,6 @@ from py_xrd_visualize.visualize import (
     fig_conf_func,
     fig_conf_show,
 )
-
-
-@dataclass()
-class Scaned:
-    path: Path
-    legend: str
-    scantime_s: float
-
-    # paths: list[Union[str, Path]],
 
 
 def make_fig_1axis(

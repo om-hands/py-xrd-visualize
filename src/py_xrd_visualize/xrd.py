@@ -63,7 +63,7 @@ def ax_format_y_log_arbunits(ax: Axes):
     ax.yaxis.set_minor_formatter(ticker.NullFormatter())
 
 
-def xys_2θ_ω_scan(
+def calc_xys_2θ_ω_scan(
     xys: list[XY], scantimes_sec: list[float], slide_exp: float, slide_base: float
 ):
     normalize_y_cps(xys, scantimes_sec)
@@ -85,7 +85,7 @@ def fig_2θ_ω_1axis(
     slide_base: float = 1.0,
 ) -> Figure:
     xys = read_xys(paths)
-    xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
+    calc_xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
 
     if range_ is None:
         range_ = range_from_xys_widest(xys)
@@ -108,7 +108,7 @@ def fig_2θ_ω_1axis(
     return fig
 
 
-def xys_ω_scan(
+def calc_xys_ω_scan(
     xys: list[XY], amps: list[float], optimizers: list[Optimizer]
 ) -> list[list[float]]:
     shift_x_center_rough(xys)
@@ -150,7 +150,7 @@ def fig_ω_scan_1axis(
     xys = read_xys(paths)
 
     optimizers = [(optimizer) for _ in amps]
-    popts = xys_ω_scan(xys, amps, optimizers)
+    popts = calc_xys_ω_scan(xys, amps, optimizers)
 
     if range_ is None:
         range_ = range_from_xys_widest(xys)
@@ -226,7 +226,7 @@ def fig_ω_scan_1axis(
     return fig
 
 
-def xys_φ_scan(
+def calc_xys_φ_scan(
     xys: list[XY],
     scantimes_sec: list[float],
     roll_x_deg: float,
@@ -257,7 +257,7 @@ def fig_φ_scan_1axis(
 ) -> Figure:
     xys = read_xys(paths)
 
-    xys_φ_scan(xys, scantimes_sec, roll_x_deg, slide_exp, slide_base)
+    calc_xys_φ_scan(xys, scantimes_sec, roll_x_deg, slide_exp, slide_base)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,

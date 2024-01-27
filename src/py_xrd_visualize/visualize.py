@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-
-import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
@@ -12,7 +10,14 @@ from py_xrd_visualize.XYs import XY
 
 
 axis_conf_func: TypeAlias = Callable[[Axes], None]
+"""
+    wrapper function for Axes configuration.i.e, wrap ax.method()
+"""
+
 fig_conf_func: TypeAlias = Callable[[Figure], None]
+"""
+    wrapper function for Figure configuration.i.e, wrap fig.method()
+"""
 
 
 def ax_conf_default(
@@ -174,6 +179,8 @@ def ax_func_horizontal_annotates(
 
 
 def ax_plots(xys: list[XY]) -> axis_conf_func:
+    """Plot xys to one ax."""
+
     def ax_func(ax: Axes) -> None:
         for xy in xys:
             ax.plot(*xy.to_tuple())
@@ -187,15 +194,16 @@ def complete_ax(
     ax_funcs: Sequence[axis_conf_func] | None = None,
 ) -> axis_conf_func:
     """
-    plot xys and set ax configuration.
+    Plot xys and apply ax configuration.
     manage ax_conf_func order.
     """
 
     def ax_func(ax: Axes) -> None:
-        ax_plots(ax)
         # set legends just after plot and before set somethings(like ax.annotate)
         # legend show annotation when ax.annotate is called before ax.legend
+        ax_plots(ax)
         ax_legends(ax)
+
         if ax_funcs is None:
             return
 
@@ -208,7 +216,18 @@ def complete_ax(
 def complete_fig(
     ax_funcs: Sequence[axis_conf_func],
     fig_funcs: Sequence[fig_conf_func] | None = None,
-):
+) -> fig_conf_func:
+    """
+    Apply each ax_funcs to each ax in fig.axes.
+
+    Parameters:
+        ax_funcs (Sequence[axis_conf_func): A list of axis configuration functions.
+        fig_funcs (Sequence[fig_conf_func] | None): An optional list of figure configuration functions.
+
+    Returns:
+        fig_conf (fig_conf_func): A figure configuration function.
+    """
+
     def fig_conf(fig: Figure) -> None:
         axs = fig.axes
         for ax, f in zip(axs, ax_funcs):

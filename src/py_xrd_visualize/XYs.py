@@ -50,37 +50,41 @@ def read_xys(target_files: list[io.TextIOBase | str | pathlib.Path]) -> list[XY]
 
 
 def slide_y_linear(xys: list[XY], slide: float):
+    """edit xys: slide y-axis linearly"""
     for i, xy in enumerate(xys):
         xy.y += slide * i
 
 
 def slide_y_log(xys: list[XY], slide: float, base: float = 1.0):
+    """edit xys: slide y-axis logly"""
     for i, xy in enumerate(xys):
         xy.y = (xy.y + 1) * base * 10 ** (slide * i)
 
 
 def normalize_y_cps(xys: Sequence[XY], scantimes_sec: Sequence[float]):
-    """set y unit cps (count per sec)"""
+    """edit xys: set y unit cps (count per sec)"""
     for xy, st in zip(xys, scantimes_sec):
         xy.y /= st
 
 
-# shift x-axis to center roughly
 def shift_x_center_rough(xys: Sequence[XY]):
+    """edit xys: shift x axis to center roughly"""
     for xy in xys:
         x = xy.x
         x -= (x[0] + x[-1]) / 2.0
 
 
 def shift_x0(xys: Sequence[XY]):
-    """shift x axis to 0"""
+    """edit xys: shift x axis to 0"""
     for xy in xys:
         x0 = xy.x.min()
         xy.x -= x0
 
 
 def roll_x(xys: Sequence[XY], roll_x_deg: float):
-    """roll x axis. call on xy.x.min is 0 ,i.e. call after `shift_x0`"""
+    """edit xys: roll x axis.
+    Call condition
+    - xy.x.min is 0 ,i.e. call after `shift_x0`"""
     for xy in xys:
         xmax = xy.x.max()
         # roll_x_deg = [0,xmax)
@@ -90,7 +94,7 @@ def roll_x(xys: Sequence[XY], roll_x_deg: float):
 
 
 def reorder_x(xys: Sequence[XY]):
-    """reorder array"""
+    """edit xys: reorder array"""
     for xy in xys:
         idx = xy.x.argmin()
         # sort xy and reserve x to y mapping
@@ -99,6 +103,7 @@ def reorder_x(xys: Sequence[XY]):
 
 
 def range_from_xys_widest(xys: list[XY]) -> tuple[float, float]:
+    """return widest range from xys"""
     range_ = (np.inf, -np.inf)
     for xy in xys:
         range_ = (min(range_[0], xy.x.min()), max(range_[1], xy.x.max()))

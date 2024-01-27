@@ -29,7 +29,6 @@ from py_xrd_visualize.optimize import (
 )
 
 from py_xrd_visualize.visualize import (
-    arrange_row_1axis_nxy,
     ax_conf_default,
     ax_conf_pass,
     ax_label,
@@ -40,6 +39,8 @@ from py_xrd_visualize.visualize import (
     complete_fig,
     fig_conf_func,
     fig_conf_show,
+    fig_legend,
+    multi_ax_func,
 )
 
 
@@ -267,7 +268,7 @@ def ax_φ(
     )
 
 
-def fig_any_scan_1axis(
+def make_any_scan_1axis(
     paths: list[TextIOBase | str | Path],
 ) -> Figure:
     xys = read_xys(paths)
@@ -279,27 +280,46 @@ def fig_any_scan_1axis(
                 (xy.x[0], xy.y[0]),
             )
 
-    return arrange_row_1axis_nxy(
-        xys=xys,
-        ax_legends=ax_conf_pass,
-        # ax_default_legends([str(path) for path in paths]),
-        fig_func=fig_conf_show(),
-        ax_func=ax_func,
+    return make_fig_1axis(
+        ax_func=multi_ax_func(
+            ax_plots(xys),
+            # ax_legends([str(path) for path in paths]),
+            ax_func,
+        ),
+        fig_funcs=[],
     )
+    # return arrange_row_1axis_nxy(
+    #     xys=xys,
+    #     ax_legends=ax_conf_pass,
+    #     # ax_default_legends([str(path) for path in paths]),
+    #     fig_func=fig_conf_show(),
+    #     ax_func=ax_func,
+    # )
 
 
-def fig_any_scan_naxis(
+def make_any_scan_naxis(
     paths: list[TextIOBase | str | Path],
 ) -> Figure:
     xys = read_xys(paths)
 
     # sharex = False
     fig, _ = plt.subplots(nrows=len(xys), sharex=False, squeeze=False)
-    axs = fig.axes
 
-    for ax, xy in zip(axs, xys):
-        ax.plot(*xy.to_tuple())
+    ax_funcs = []
+    for xy in xys:
+        ax_funcs.append(
+            complete_ax(
+                ax_plots=ax_plots([xy]),
+                ax_legends=ax_conf_pass,
+            )
+        )
 
-    fig.legend([str(path) for path in paths])
-    fig_conf_show()(fig)
+    complete_fig(
+        ax_funcs=ax_funcs,
+        fig_funcs=[
+            fig_legend([str(path) for path in paths]),
+            fig_conf_show(),
+        ],
+    )(fig)
+
     return fig

@@ -15,69 +15,6 @@ axis_conf_func: TypeAlias = Callable[[Axes], None]
 fig_conf_func: TypeAlias = Callable[[Figure], None]
 
 
-def arrange_row_1axis_nxy(
-    xys: list[XY],
-    ax_legends: axis_conf_func,
-    ax_func: axis_conf_func,
-    fig_func: fig_conf_func,
-) -> Figure:
-    """
-    Parameters:
-        `xys`:xy-styled input data.
-
-        `ax_func`:plot xy on ax.
-
-    """
-    fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
-    ax = fig.axes[0]
-
-    for xy in xys:
-        ax.plot(*xy.to_tuple())
-
-    # set legends just after plot and before set somethings(like ax.annotate)
-    # legend show annotation when ax.annotate is called before ax.legend
-    ax_legends(ax)
-    ax_func(ax)
-
-    fig_func(fig)
-
-    return fig
-
-
-def arrange_row_naxis_nxy(
-    xys: list[XY],
-    legends: list[str],
-    ax_func: axis_conf_func,
-    fig_func: fig_conf_func,
-) -> Figure:
-    """
-    Returns a figure with n data plotted on n axes each.
-    Parameters:
-    ---
-        `xys`:xy-styled input data.
-
-        `ax_func`:plot xy on ax.
-
-        `xlabel`,`ylabel`:axis label.
-    """
-    fig, _ = plt.subplots(nrows=len(xys), sharex=True, squeeze=False)
-    axs = fig.axes
-
-    for ax, xy in zip(axs, xys):
-        ax.plot(*xy.to_tuple())
-
-    # set legends just after plot and before set somethings(like ax.annotate)
-    # legend show annotation when ax.annotate is called before ax.legend
-    fig.legend(legends)
-    for ax in axs:
-        ax_func(ax)
-
-    # set somethings after set legend
-    fig_func(fig)
-
-    return fig
-
-
 def ax_conf_default(
     range_: tuple[float, float],
     ymax: float | None = None,
@@ -179,6 +116,18 @@ def ax_conf_pass(ax: Axes):
 
 def fig_conf_pass(fig: Figure):
     pass
+
+
+def fig_legend(
+    legends: list[str] | None, title: str = "", reverse=False
+) -> fig_conf_func:
+    if legends is None:
+        return fig_conf_pass
+
+    def fig_conf(fig: Figure):
+        fig.legend(legends, title=title, reverse=reverse)
+
+    return fig_conf
 
 
 def ax_legends(

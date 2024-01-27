@@ -20,6 +20,7 @@ from py_xrd_visualize.XYs import (
     shift_x_center_rough,
     shift_x0,
     slide_y_log,
+    range_from_xys_widest,
 )
 
 
@@ -27,7 +28,7 @@ from py_xrd_visualize.optimize import (
     Optimizer,
     Gauss,
 )
-from py_xrd_visualize.util import range_from_xys_widest
+
 from py_xrd_visualize.visualize import (
     arrange_row_1axis_nxy,
     ax_conf_default,

@@ -4,7 +4,7 @@ import matplotlib as mpl
 
 import matplotlib.pyplot as plt
 from py_xrd_visualize.XYs import read_xys
-from py_xrd_visualize.util import Gauss, Voigt
+from py_xrd_visualize.optimize import Gauss, Voigt
 
 from py_xrd_visualize.visualize import (
     Annotater,

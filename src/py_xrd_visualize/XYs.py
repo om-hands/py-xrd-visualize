@@ -96,3 +96,11 @@ def reorder_x(xys: Sequence[XY]):
         # sort xy and reserve x to y mapping
         xy.x = np.roll(xy.x, -idx)
         xy.y = np.roll(xy.y, -idx)
+
+
+def range_from_xys_widest(xys: list[XY]) -> tuple[float, float]:
+    range_ = (np.inf, -np.inf)
+    for xy in xys:
+        range_ = (min(range_[0], xy.x.min()), max(range_[1], xy.x.max()))
+    print(range_)
+    return range_

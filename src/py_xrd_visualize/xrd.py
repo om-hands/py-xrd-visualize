@@ -39,11 +39,7 @@ from py_xrd_visualize.visualize import (
     complete_ax,
     complete_fig,
     fig_conf_func,
-    fig_conf_pass,
     fig_conf_show,
-    fig_func_label,
-    multi_ax_func,
-    multi_fig_func,
 )
 
 
@@ -79,14 +75,14 @@ def ax_format_y_log_arbunits(ax: Axes):
     ax.yaxis.set_minor_formatter(ticker.NullFormatter())
 
 
-def calc_xys_2θ_ω_scan(
+def calc_xys_2θ_ω(
     xys: list[XY], scantimes_sec: list[float], slide_exp: float, slide_base: float
 ):
     normalize_y_cps(xys, scantimes_sec)
     slide_y_log(xys, slide_exp, slide_base)
 
 
-def ax_2θ_ω_scan(
+def ax_2θ_ω(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
     range_: tuple[float, float] | None = None,
@@ -100,7 +96,7 @@ def ax_2θ_ω_scan(
     ax_funcs: list[axis_conf_func] = [],
 ) -> axis_conf_func:
     xys = read_xys(paths)
-    calc_xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
+    calc_xys_2θ_ω(xys, scantimes_sec, slide_exp, slide_base)
 
     if range_ is None:
         range_ = range_from_xys_widest(xys)
@@ -142,12 +138,70 @@ def calc_xys_ω_scan(
     return popts
 
 
-def fig_ω_scan_1axis(
+def ax_ω_format(ax: Axes):
+    # show range includes amp(=1.0),
+    ax.set_ylim(ymin=0, ymax=1.5)
+
+    # y axis: linear scale
+    ax.yaxis.set_major_locator(ticker.LinearLocator())
+    ax.yaxis.set_minor_locator(ticker.LinearLocator(21))
+
+    # don't show y value
+    ax.yaxis.set_major_formatter(ticker.NullFormatter())
+
+
+def ax_ω_plot_opts(
+    legends: list[str] | None,
+    range_: tuple[float, float],
+    popts: list[list[float]],
+    optimizers: list[Optimizer],
+    noshow: bool = False,
+):
+    if not noshow:
+        return ax_conf_pass
+
+    if legends is None:
+        legends = [f"{i}" for i, _ in enumerate(popts)]
+
+    ann_texts = []
+
+    def ax_func(ax: Axes):
+        for popt, legend, optimizer in zip(popts, legends, optimizers):
+            ann_text = f"{legend}:{optimizer.toString(popt)}"
+            ann_texts.append(ann_text)
+
+            x = np.linspace(*range_)
+            # plot ideal func (center=0)
+            popt_center = [popt[0], 0, *popt[2:]]
+            y = np.vectorize(optimizer.func)(x, *popt_center)
+
+            # normalize y to 1 on x=0
+            ymax = np.max(y)
+            y /= ymax
+
+            # plot fit curve
+            ax.plot(x, y)
+
+            hwhm = optimizer.fwhm(popt) / 2
+            # 1.8 is arbitrary
+            xy = (hwhm, optimizer.func(hwhm, *popt_center) / ymax * 1.8)
+            ax.annotate(
+                ann_text,
+                xy=xy,
+                horizontalalignment="left",
+                verticalalignment="baseline",
+            )
+        print("optimized param")
+        for ann_text in ann_texts:
+            print(ann_text)
+
+    return ax_func
+
+
+def ax_ω(
     paths: list[TextIOBase | str | Path],
     amps: list[float],
     range_: tuple[float, float] | None = None,
-    ax_func: axis_conf_func = ax_conf_pass,
-    fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "ω(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     legends: list[str] | None = None,
@@ -155,7 +209,8 @@ def fig_ω_scan_1axis(
     legend_reverse: bool = False,
     optimizer: Optimizer = Gauss(),
     show_optparam: bool = False,
-) -> Figure:
+    ax_funcs: list[axis_conf_func] = [],
+) -> axis_conf_func:
     xys = read_xys(paths)
 
     optimizers = [(optimizer) for _ in amps]
@@ -164,78 +219,20 @@ def fig_ω_scan_1axis(
     if range_ is None:
         range_ = range_from_xys_widest(xys)
 
-    def ax_func_format(ax: Axes):
-        # show range includes amp(=1.0),
-        ax.set_ylim(ymin=0, ymax=1.5)
-
-        # y axis: linear scale
-        ax.yaxis.set_major_locator(ticker.LinearLocator())
-        ax.yaxis.set_minor_locator(ticker.LinearLocator(21))
-
-        # don't show y value
-        ax.yaxis.set_major_formatter(ticker.NullFormatter())
-
-    def ax_func_opt(legends: list[str] | None):
-        if not show_optparam:
-            return ax_conf_pass
-
-        if legends is None:
-            legends = [f"{i}" for i, _ in enumerate(popts)]
-
-        ann_texts = []
-
-        def ax_func(ax: Axes):
-            for popt, legend, optimizer in zip(popts, legends, optimizers):
-                ann_text = f"{legend}:{optimizer.toString(popt)}"
-                ann_texts.append(ann_text)
-
-                x = np.linspace(*range_)
-                # plot ideal func (center=0)
-                popt_center = [popt[0], 0, *popt[2:]]
-                y = np.vectorize(optimizer.func)(x, *popt_center)
-
-                # normalize y to 1 on x=0
-                ymax = np.max(y)
-                y /= ymax
-
-                # plot fit curve
-                ax.plot(x, y)
-
-                hwhm = optimizer.fwhm(popt) / 2
-                # 1.8 is arbitrary
-                xy = (hwhm, optimizer.func(hwhm, *popt_center) / ymax * 1.8)
-                ax.annotate(
-                    ann_text,
-                    xy=xy,
-                    horizontalalignment="left",
-                    verticalalignment="baseline",
-                )
-            print("optimized param")
-            for ann_text in ann_texts:
-                print(ann_text)
-
-        return ax_func
-
-    fig = arrange_row_1axis_nxy(
-        xys=xys,
+    return complete_ax(
+        ax_plots=ax_plots(xys),
         ax_legends=ax_legends(legends, legend_title, legend_reverse),
-        ax_func=multi_ax_func(
+        ax_funcs=[
             ax_conf_default(range_, xscale="linear", yscale="linear"),
-            ax_func_opt(legends),
-            ax_func_format,
-            ax_func,
-        ),
-        fig_func=multi_fig_func(
-            fig_func_label(xlabel, ylabel),
-            fig_conf_show(),
-            fig_conf,
-        ),
+            ax_ω_plot_opts(legends, range_, popts, optimizers, show_optparam),
+            ax_label(xlabel, ylabel),
+            ax_ω_format,
+            *ax_funcs,
+        ],
     )
 
-    return fig
 
-
-def calc_xys_φ_scan(
+def calc_xys_φ(
     xys: list[XY],
     scantimes_sec: list[float],
     roll_x_deg: float,
@@ -249,12 +246,11 @@ def calc_xys_φ_scan(
     slide_y_log(xys, slide_exp, slide_base)
 
 
-def fig_φ_scan_1axis(
+def ax_φ(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
     range_: tuple[float, float] = (0, 360),
-    ax_func: axis_conf_func = ax_conf_pass,
-    fig_conf: fig_conf_func = fig_conf_pass,
+    ax_funcs: list[axis_conf_func] = [],
     xlabel: str = "φ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     legends: list[str] | None = None,
@@ -263,27 +259,21 @@ def fig_φ_scan_1axis(
     roll_x_deg: float = 0,
     slide_exp: float = 2,
     slide_base: float = 1.0,
-) -> Figure:
+) -> axis_conf_func:
     xys = read_xys(paths)
 
-    calc_xys_φ_scan(xys, scantimes_sec, roll_x_deg, slide_exp, slide_base)
+    calc_xys_φ(xys, scantimes_sec, roll_x_deg, slide_exp, slide_base)
 
-    fig = arrange_row_1axis_nxy(
-        xys=xys,
+    return complete_ax(
+        ax_plots=ax_plots(xys),
         ax_legends=ax_legends(legends, legend_title, legend_reverse),
-        ax_func=multi_ax_func(
+        ax_funcs=[
             ax_conf_default(range_, xscale="linear", yscale="log"),
+            ax_label(xlabel, ylabel),
             ax_format_y_log_arbunits,
-            ax_func,
-        ),
-        fig_func=multi_fig_func(
-            fig_func_label(xlabel, ylabel),
-            fig_conf_show(),
-            fig_conf,
-        ),
+            *ax_funcs,
+        ],
     )
-
-    return fig
 
 
 def fig_any_scan_1axis(

@@ -250,17 +250,17 @@ def complete_ax(
 
 def complete_fig(
     ax_funcs: Sequence[axis_conf_func],
-    fig_func: Sequence[fig_conf_func] | None = None,
+    fig_funcs: Sequence[fig_conf_func] | None = None,
 ):
     def fig_conf(fig: Figure) -> None:
         axs = fig.axes
         for ax, f in zip(axs, ax_funcs):
             f(ax)
 
-        if fig_func is None:
+        if fig_funcs is None:
             return
 
-        for f in fig_func:
+        for f in fig_funcs:
             f(fig)
 
     return fig_conf

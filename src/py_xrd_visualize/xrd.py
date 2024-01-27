@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from io import TextIOBase
 
 from pathlib import Path
+from typing import Sequence
+
 
 from matplotlib import pyplot as plt, ticker
 from matplotlib.axes import Axes
@@ -30,8 +32,12 @@ from py_xrd_visualize.visualize import (
     arrange_row_1axis_nxy,
     ax_conf_default,
     ax_conf_pass,
+    ax_label,
     ax_legends,
+    ax_plots,
     axis_conf_func,
+    complete_ax,
+    complete_fig,
     fig_conf_func,
     fig_conf_pass,
     fig_conf_show,
@@ -48,6 +54,16 @@ class Scaned:
     scantime_s: float
 
     # paths: list[Union[str, Path]],
+
+
+def make_fig_1axis(
+    ax_func: axis_conf_func,
+    fig_funcs: Sequence[fig_conf_func],
+) -> Figure:
+    fig, _ = plt.subplots(nrows=1, sharex=True, squeeze=False)
+
+    complete_fig(ax_funcs=[ax_func], fig_funcs=[fig_conf_show(), *fig_funcs])(fig)
+    return fig
 
 
 def ax_format_y_log_arbunits(ax: Axes):
@@ -70,12 +86,10 @@ def calc_xys_2θ_ω_scan(
     slide_y_log(xys, slide_exp, slide_base)
 
 
-def fig_2θ_ω_1axis(
+def ax_2θ_ω_scan(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
     range_: tuple[float, float] | None = None,
-    ax_func: axis_conf_func = ax_conf_pass,
-    fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
     ylabel: str = "Intensity(arb. unit)",
     legends: list[str] | None = None,
@@ -83,29 +97,24 @@ def fig_2θ_ω_1axis(
     legend_reverse: bool = False,
     slide_exp: float = 2,
     slide_base: float = 1.0,
-) -> Figure:
+    ax_funcs: list[axis_conf_func] = [],
+) -> axis_conf_func:
     xys = read_xys(paths)
     calc_xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
 
     if range_ is None:
         range_ = range_from_xys_widest(xys)
 
-    fig = arrange_row_1axis_nxy(
-        xys=xys,
+    return complete_ax(
+        ax_plots=ax_plots(xys),
         ax_legends=ax_legends(legends, legend_title, legend_reverse),
-        ax_func=multi_ax_func(
+        ax_funcs=[
             ax_conf_default(range_, xscale="linear", yscale="log"),
             ax_format_y_log_arbunits,
-            ax_func,
-        ),
-        fig_func=multi_fig_func(
-            fig_func_label(xlabel, ylabel),
-            fig_conf_show(),
-            fig_conf,
-        ),
+            ax_label(xlabel, ylabel),
+            *ax_funcs,
+        ],
     )
-
-    return fig
 
 
 def calc_xys_ω_scan(

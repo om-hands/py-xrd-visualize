@@ -149,6 +149,14 @@ def fig_func_label(xlabel, ylabel: str) -> fig_conf_func:
     return fig_conf
 
 
+def ax_label(xlabel, ylabel: str) -> axis_conf_func:
+    def ax_conf(ax: Axes):
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+
+    return ax_conf
+
+
 def multi_fig_func(*fig_confs: fig_conf_func) -> fig_conf_func:
     def fig_conf(fig: Figure):
         for f in fig_confs:

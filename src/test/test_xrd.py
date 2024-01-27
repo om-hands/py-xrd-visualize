@@ -20,8 +20,8 @@ from py_xrd_visualize.xrd import (
     ax_2θ_ω,
     ax_φ,
     ax_ω,
-    fig_any_scan_1axis,
-    fig_any_scan_naxis,
+    make_any_scan_1axis,
+    make_any_scan_naxis,
     make_fig_1axis,
 )
 
@@ -167,8 +167,8 @@ def plot_any_scan_1axis():
         )
     )
     with mpl.rc_context({"font.size": 10}):
-        fig_any_scan_1axis(paths)
-        fig_any_scan_naxis(paths)
+        make_any_scan_1axis(paths)
+        make_any_scan_naxis(paths)
         plt.show()
 
 
@@ -215,8 +215,8 @@ if __name__ == "__main__":
             "font.size": 18,
         }
     )
-    plot_2θ_ω_1axis()
-    plot_ω_scan_1axis()
-    plot_φ_scan_1axis()
+    # plot_2θ_ω_1axis()
+    # plot_ω_scan_1axis()
+    # plot_φ_scan_1axis()
     plot_any_scan_1axis()
     complete_test()

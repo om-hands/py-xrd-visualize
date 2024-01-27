@@ -3,6 +3,7 @@ import math
 
 from typing import Sequence
 import numpy as np
+from py_xrd_visualize.XYs import XY
 
 import scipy
 
@@ -122,3 +123,11 @@ class Voigt(Optimizer):
         gw = popt[3]
 
         return f"voigt,{amp=:#.{sig_digs}g},{center=:#.{sig_digs}g},{lw=:#.{sig_digs}g},{gw=:#.{sig_digs}g}"
+
+
+def range_from_xys_widest(xys: list[XY]) -> tuple[float, float]:
+    range_ = (np.inf, -np.inf)
+    for xy in xys:
+        range_ = (min(range_[0], xy.x.min()), max(range_[1], xy.x.max()))
+    print(range_)
+    return range_

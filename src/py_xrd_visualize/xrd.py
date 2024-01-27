@@ -24,6 +24,7 @@ from py_xrd_visualize.XYs import (
 from py_xrd_visualize.util import (
     Optimizer,
     Gauss,
+    range_from_xys_widest,
 )
 from py_xrd_visualize.visualize import (
     arrange_row_1axis_nxy,
@@ -72,7 +73,7 @@ def xys_2θ_ω_scan(
 def fig_2θ_ω_1axis(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
-    range_: tuple[float, float],
+    range_: tuple[float, float] | None = None,
     ax_func: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "2θ(deg.)",
@@ -85,6 +86,9 @@ def fig_2θ_ω_1axis(
 ) -> Figure:
     xys = read_xys(paths)
     xys_2θ_ω_scan(xys, scantimes_sec, slide_exp, slide_base)
+
+    if range_ is None:
+        range_ = range_from_xys_widest(xys)
 
     fig = arrange_row_1axis_nxy(
         xys=xys,
@@ -132,7 +136,7 @@ def xys_ω_scan(
 def fig_ω_scan_1axis(
     paths: list[TextIOBase | str | Path],
     amps: list[float],
-    range_: tuple[float, float],
+    range_: tuple[float, float] | None = None,
     ax_func: axis_conf_func = ax_conf_pass,
     fig_conf: fig_conf_func = fig_conf_pass,
     xlabel: str = "ω(deg.)",
@@ -147,6 +151,9 @@ def fig_ω_scan_1axis(
 
     optimizers = [(optimizer) for _ in amps]
     popts = xys_ω_scan(xys, amps, optimizers)
+
+    if range_ is None:
+        range_ = range_from_xys_widest(xys)
 
     def ax_func_format(ax: Axes):
         # show range includes amp(=1.0),

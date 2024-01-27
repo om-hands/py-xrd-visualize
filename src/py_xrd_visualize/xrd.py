@@ -23,11 +23,11 @@ from py_xrd_visualize.XYs import (
 )
 
 
-from py_xrd_visualize.util import (
+from py_xrd_visualize.optimize import (
     Optimizer,
     Gauss,
-    range_from_xys_widest,
 )
+from py_xrd_visualize.util import range_from_xys_widest
 from py_xrd_visualize.visualize import (
     arrange_row_1axis_nxy,
     ax_conf_default,

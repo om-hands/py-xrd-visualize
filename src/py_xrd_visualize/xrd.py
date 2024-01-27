@@ -283,18 +283,10 @@ def make_any_scan_1axis(
     return make_fig_1axis(
         ax_func=multi_ax_func(
             ax_plots(xys),
-            # ax_legends([str(path) for path in paths]),
             ax_func,
         ),
         fig_funcs=[],
     )
-    # return arrange_row_1axis_nxy(
-    #     xys=xys,
-    #     ax_legends=ax_conf_pass,
-    #     # ax_default_legends([str(path) for path in paths]),
-    #     fig_func=fig_conf_show(),
-    #     ax_func=ax_func,
-    # )
 
 
 def make_any_scan_naxis(

@@ -238,6 +238,14 @@ def calc_xys_φ(
     slide_y_log(xys, slide_exp, slide_base)
 
 
+def ax_φ_format(base: float):
+    def ax_func(ax: Axes):
+        ax_format_y_log_arbunits(ax)
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(base))
+
+    return ax_func
+
+
 def ax_φ(
     paths: list[TextIOBase | str | Path],
     scantimes_sec: list[float],
@@ -251,6 +259,7 @@ def ax_φ(
     roll_x_deg: float = 0,
     slide_exp: float = 2,
     slide_base: float = 1.0,
+    xtick: float = 45,
 ) -> axis_conf_func:
     xys = read_xys(paths)
 
@@ -262,7 +271,7 @@ def ax_φ(
         ax_funcs=[
             ax_conf_default(range_, xscale="linear", yscale="log"),
             ax_label(xlabel, ylabel),
-            ax_format_y_log_arbunits,
+            ax_φ_format(xtick),
             *ax_funcs,
         ],
     )

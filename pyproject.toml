@@ -1,6 +1,6 @@
 [project]
 name = "py-xrd-visualize"
-version = "0.2.0"
+version = "0.2.1"
 description = "Add a short description here"
 authors = [{ name = "om-hands", email = "okumuramasaki.hands@gmail.com" }]
 dependencies = [
